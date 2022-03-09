@@ -22,9 +22,10 @@ import tripPricer.Provider;
 
 public class TestTourGuideService {
 
-	GpsUtil gpsUtil = new GpsUtil();
-	RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
-	TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+	TourGuideModule tourGuideModule=new TourGuideModule();
+
+	RewardsService rewardsService = tourGuideModule.getRewardsService();
+	TourGuideService tourGuideService = new TourGuideService(tourGuideModule.getGpsUtil(), rewardsService);
 
 	User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 	User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
@@ -78,7 +79,7 @@ public class TestTourGuideService {
 		assertEquals(user.getUserId(), visitedLocation.userId);
 	}
 	
-	@Ignore // Not yet implemented
+	//@Ignore // Not yet implemented
 	@Test
 	public void getNearbyAttractions() {
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
