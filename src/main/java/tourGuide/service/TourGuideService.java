@@ -32,9 +32,12 @@ public class TourGuideService {
 	private Logger logger = LoggerFactory.getLogger(TourGuideService.class);
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer = new TripPricer();
-	public final Tracker tracker;
-	boolean testMode = true;
+
+	public /*final*/ Tracker tracker =new Tracker(this);
+
+	private Logger logger= LoggerFactory.getLogger(TourGuideService.class);
+
+	//boolean testMode = true;
 	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
@@ -45,8 +48,7 @@ public class TourGuideService {
 			logger.debug("Initializing users");
 			initializeInternalUsers();
 			logger.debug("Finished initializing users");
-		}
-		tracker = new Tracker(this);
+		}*/
 		addShutDownHook();
 	}
 	
