@@ -3,7 +3,6 @@ package tourGuide.unitTest;
 import gpsUtil.GpsUtil;
 import org.junit.Test;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
-import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -187,6 +186,19 @@ public class TourGuideServiceUnitTest {
 
     //When
     List<Provider>actual= classUnderTest.getTripDeals(user);
+
+    //Then
+    assertThat(actual.size()).isEqualTo(2);
+  }
+
+  @Test
+  public void givenAVisitedLocationWhenGetNearByAttractionsThenReturnListOfTwoAttractions() {
+    //Given
+    when(mockGps.getAttractions()).thenReturn(Arrays.asList(attraction,attraction1));
+    when(mockRewards.isWithinAttractionProximity(any(),any())).thenReturn(true);
+
+    //When
+    List<gpsUtil.location.Attraction>actual= classUnderTest.getNearByAttractions(userPosition);
 
     //Then
     assertThat(actual.size()).isEqualTo(2);
