@@ -24,6 +24,8 @@ public class TourGuideService {
 
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
+	private final TripPricer tripPricer;
+	//private final TripPricer tripPricer = new TripPricer();
 
 	public /*final*/ Tracker tracker =new Tracker(this);
 
@@ -31,9 +33,10 @@ public class TourGuideService {
 
 	//boolean testMode = true;
 	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, UserRepository repository) {
+	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, TripPricer tripPricer, UserRepository repository) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
+		this.tripPricer= tripPricer;
 		this.repository= repository;
 
 		/*if(testMode) {
@@ -72,6 +75,32 @@ public class TourGuideService {
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
 		return visitedLocation;
+	}
+
+	public VisitedLocation getUserLocation(User user) {
+		VisitedLocation userLocation;
+
+		if(user.getVisitedLocations().size()>0){
+			userLocation= user.getLastVisitedLocation();
+		}else {
+			userLocation= gpsUtil.getUserLocation(user.getUserId());
+		}
+		return userLocation;
+	}
+
+	public List<UserReward> getUserRewards(User user) {
+		return user.getUserRewards();
+	}
+
+	public List<Provider> getTripDeals(User user) {
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+
+		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
+				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulativeRewardPoints);
+
+		user.setTripDeals(providers);
+
+		return providers;
 	}
 
 	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {

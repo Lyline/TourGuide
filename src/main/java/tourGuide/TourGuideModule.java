@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
 import tourGuide.service.RewardsService;
+import tripPricer.TripPricer;
 
 import java.util.Locale;
 
@@ -27,5 +28,8 @@ public class TourGuideModule {
 	public RewardCentral getRewardCentral() {
 		return new RewardCentral();
 	}
+
+	@Bean
+	public TripPricer getTripPricer(){return new TripPricer();}
 	
 }

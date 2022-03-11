@@ -15,17 +15,23 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.repository.UserGeneratorRepositoryImpl;
+import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tripPricer.Provider;
+import tripPricer.TripPricer;
 
 public class TestTourGuideService {
 
 	TourGuideModule tourGuideModule=new TourGuideModule();
 
+	UserRepository repository= new UserGeneratorRepositoryImpl();
+	TripPricer tripPricer= new TripPricer();
+
 	RewardsService rewardsService = tourGuideModule.getRewardsService();
-	TourGuideService tourGuideService = new TourGuideService(tourGuideModule.getGpsUtil(), rewardsService);
+	TourGuideService tourGuideService = new TourGuideService(tourGuideModule.getGpsUtil(), rewardsService,tripPricer,repository);
 
 	User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 	User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
@@ -90,7 +96,8 @@ public class TestTourGuideService {
 		
 		assertEquals(5, attractions.size());
 	}
-	
+
+	@Test
 	public void getTripDeals() {
 				List<Provider> providers = tourGuideService.getTripDeals(user);
 		
