@@ -2,7 +2,6 @@ package tourGuide.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tourGuide.helper.InternalTestHelper;
 import tourGuide.user.User;
 
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ public class UserGeneratorRepositoryImpl implements UserRepository {
 
   // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
   private final Map<String, User> internalUserMap = new HashMap<>();
-  private Logger logger= LoggerFactory.getLogger(UserGeneratorRepositoryImpl.class);
+  private final Logger logger= LoggerFactory.getLogger(UserGeneratorRepositoryImpl.class);
 
   @Override
   public User getUser(String username) {
@@ -31,7 +30,7 @@ public class UserGeneratorRepositoryImpl implements UserRepository {
 
   @Override
   public List<User> getAllUser() {
-    return internalUserMap.values().stream().collect(Collectors.toList());
+    return new ArrayList<>(internalUserMap.values());
   }
 
   @Override
@@ -46,8 +45,9 @@ public class UserGeneratorRepositoryImpl implements UserRepository {
    *
    **********************************************************************************/
 
-  public void initializeInternalUsers() {
-    IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
+  @Override
+  public void initializeInternalUsers(int nbUser) {
+    IntStream.range(0, nbUser).forEach(i -> {
       String userName = "internalUser" + i;
       String phone = "000";
       String email = userName + "@tourGuide.com";
@@ -56,13 +56,11 @@ public class UserGeneratorRepositoryImpl implements UserRepository {
 
       internalUserMap.put(userName, user);
     });
-    logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
+    logger.debug("Created " + nbUser + " internal test users.");
   }
 
   private void generateUserLocationHistory(User user) {
-    IntStream.range(0, 3).forEach(i-> {
-      user.addToVisitedLocations(new gpsUtil.location.VisitedLocation(user.getUserId(), new gpsUtil.location.Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
-    });
+    IntStream.range(0, 3).forEach(i-> user.addToVisitedLocations(new gpsUtil.location.VisitedLocation(user.getUserId(), new gpsUtil.location.Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime())));
   }
 
   private double generateRandomLongitude() {

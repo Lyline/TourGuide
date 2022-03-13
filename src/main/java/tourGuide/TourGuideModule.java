@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 
 import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
+import tourGuide.repository.UserGeneratorRepositoryImpl;
+import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
 import tripPricer.TripPricer;
 
@@ -27,6 +29,11 @@ public class TourGuideModule {
 	@Bean
 	public RewardCentral getRewardCentral() {
 		return new RewardCentral();
+	}
+
+	@Bean
+	public UserRepository getUserRepository(){
+		return new UserGeneratorRepositoryImpl();
 	}
 
 	@Bean

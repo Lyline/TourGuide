@@ -10,6 +10,7 @@ public interface UserRepository {
   User getUser(String username);
   List<User> getAllUser();
   User saveUser(User user);
+  void initializeInternalUsers(int nbUser);
 
 
 }

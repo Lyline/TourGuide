@@ -1,7 +1,6 @@
 package tourGuide.unitTest.repository;
 
 import org.junit.Test;
-import tourGuide.helper.InternalTestHelper;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.user.User;
 
@@ -18,8 +17,7 @@ public class UserGeneratorRepositoryTest {
   @Test
   public void givenAUserExistWhenGetUserThenUserIsFound() {
     //Given
-    InternalTestHelper.setInternalUserNumber(1);
-    classUnderTest.initializeInternalUsers();
+    classUnderTest.initializeInternalUsers(0);
 
     //When
     User actual= classUnderTest.getUser("internalUser0");
@@ -31,8 +29,7 @@ public class UserGeneratorRepositoryTest {
   @Test
   public void givenAUserNotExistWhenGetUserThenReturnNull() {
     //Given
-    InternalTestHelper.setInternalUserNumber(1);
-    classUnderTest.initializeInternalUsers();
+    classUnderTest.initializeInternalUsers(1);
 
     //When
     User actual= classUnderTest.getUser("noUser");
@@ -44,8 +41,7 @@ public class UserGeneratorRepositoryTest {
   @Test
   public void givenTwoUsersWhenGetAllUsersThenReturnAListOfUsersFound() {
     //Given
-    InternalTestHelper.setInternalUserNumber(2);
-    classUnderTest.initializeInternalUsers();
+    classUnderTest.initializeInternalUsers(2);
 
     //When
     List<User> actual= classUnderTest.getAllUser();
@@ -59,8 +55,7 @@ public class UserGeneratorRepositoryTest {
   @Test
   public void givenNoUsersWhenGetAllUsersThenReturnAnEmptyList() {
     //Given
-    InternalTestHelper.setInternalUserNumber(0);
-    classUnderTest.initializeInternalUsers();
+    classUnderTest.initializeInternalUsers(0);
 
     //When
     List<User> actual= classUnderTest.getAllUser();
@@ -72,8 +67,7 @@ public class UserGeneratorRepositoryTest {
   @Test
   public void givenANewUserWhenSaveUserThenUserIsSaved() {
     //Given
-    InternalTestHelper.setInternalUserNumber(0);
-    classUnderTest.initializeInternalUsers();
+    classUnderTest.initializeInternalUsers(0);
 
     User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 
