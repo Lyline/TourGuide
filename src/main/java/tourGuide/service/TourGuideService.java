@@ -6,6 +6,7 @@ import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
@@ -31,7 +32,7 @@ public class TourGuideService {
 
 	private Logger logger= LoggerFactory.getLogger(TourGuideService.class);
 
-	//boolean testMode = true;
+	boolean testMode = true;
 	
 	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, TripPricer tripPricer, UserRepository repository) {
 		this.gpsUtil = gpsUtil;
@@ -39,12 +40,7 @@ public class TourGuideService {
 		this.tripPricer= tripPricer;
 		this.repository= repository;
 
-		/*if(testMode) {
-			logger.info("TestMode enabled");
-			logger.debug("Initializing users");
-			initializeInternalUsers();
-			logger.debug("Finished initializing users");
-		}*/
+
 		addShutDownHook();
 	}
 	
@@ -113,7 +109,20 @@ public class TourGuideService {
 		
 		return nearbyAttractions;
 	}
-	
+
+	public void initTracker(){
+		tracker=new Tracker(this);
+	}
+
+	public void initUsers(int nbUsers){
+		if(testMode) {
+			logger.info("TestMode enabled");
+			logger.debug("Initializing users");
+			repository.initializeInternalUsers(nbUsers);
+			logger.debug("Finished initializing users");
+		}
+	}
+
 	private void addShutDownHook() {
 		Runtime.getRuntime().addShutdownHook(new Thread() { 
 		      public void run() {

@@ -14,7 +14,7 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
-import tourGuide.helper.InternalTestHelper;
+
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
@@ -38,7 +38,7 @@ public class TestTourGuideService {
 
 	@Before
 	public void setUp() throws Exception {
-		InternalTestHelper.setInternalUserNumber(0);
+		tourGuideService.initUsers(0);
 	}
 
 	@Test
