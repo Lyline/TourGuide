@@ -2,12 +2,13 @@ package tourGuide.service;
 
 import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
+import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
+import tourGuide.service.dto.AttractionDto;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
@@ -15,7 +16,9 @@ import tripPricer.Provider;
 import tripPricer.TripPricer;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static tourGuide.repository.UserGeneratorRepositoryImpl.tripPricerApiKey;
 
@@ -39,7 +42,6 @@ public class TourGuideService {
 		this.rewardsService = rewardsService;
 		this.tripPricer= tripPricer;
 		this.repository= repository;
-
 
 		addShutDownHook();
 	}
@@ -99,15 +101,26 @@ public class TourGuideService {
 		return providers;
 	}
 
-	public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
-		List<Attraction> nearbyAttractions = new ArrayList<>();
-		for(Attraction attraction : gpsUtil.getAttractions()) {
-			if(rewardsService.isWithinAttractionProximity(attraction, visitedLocation.location)) {
-				nearbyAttractions.add(attraction);
-			}
+	public List<AttractionDto> getNearByAttractions(User user) {
+		List<AttractionDto> sortedAttractions= new ArrayList<>();
+		List<Attraction> attractions= gpsUtil.getAttractions();
+
+		for(Attraction attract: attractions){
+			double distance= rewardsService.getDistance(
+					new Location(attract.latitude,attract.longitude),
+					new Location(user.getLastVisitedLocation().location.latitude,
+							user.getLastVisitedLocation().location.longitude));
+
+			sortedAttractions.add(new AttractionDto(attract,user.getLastVisitedLocation(),distance));
 		}
-		
-		return nearbyAttractions;
+
+			List<AttractionDto> selectedAttractions=sortedAttractions.stream()
+					.sorted(Comparator.comparingDouble(AttractionDto::getDistance))
+					.collect(Collectors.toList());
+
+		if (selectedAttractions.size()>=5){
+			return selectedAttractions.subList(0,5);
+		}else return selectedAttractions.subList(0,selectedAttractions.size());
 	}
 
 	public void initTracker(){

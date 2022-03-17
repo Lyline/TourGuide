@@ -5,6 +5,7 @@ import org.junit.Test;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
+import tourGuide.service.dto.AttractionDto;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
@@ -34,16 +35,16 @@ public class TourGuideServiceUnitTest {
   User user = new User(UUID.randomUUID(), "Jean", "000", "jon@tourGuide.com");
   User user2 = new User(UUID.randomUUID(), "Astrid", "000", "jon2@tourGuide.com");
 
-  gpsUtil.location.VisitedLocation userPosition=
+  gpsUtil.location.VisitedLocation locationParis =
       new gpsUtil.location.VisitedLocation(
           user.getUserId(),
-          new gpsUtil.location.Location(48.,2.),
+          new gpsUtil.location.Location(48.856614,2.3522219),
           new Date());
 
-  gpsUtil.location.VisitedLocation userPosition1=
+  gpsUtil.location.VisitedLocation locationRennes =
       new gpsUtil.location.VisitedLocation(
           user.getUserId(),
-          new gpsUtil.location.Location(50.,2.),
+          new gpsUtil.location.Location(	48.117266 ,-1.6777926),
           new Date());
 
   gpsUtil.location.Attraction attraction=
@@ -52,6 +53,22 @@ public class TourGuideServiceUnitTest {
   gpsUtil.location.Attraction attraction1=
       new gpsUtil.location.Attraction("Futuroscope","Poitiers","Vendée",
           46.580224,0.340375);
+  gpsUtil.location.Attraction attraction2=
+      new gpsUtil.location.Attraction("Musée Jules Verne","Nantes","Loire Atlantique",
+          47.201616, -1.577347);
+  gpsUtil.location.Attraction attraction3=
+      new gpsUtil.location.Attraction("Musée Grévin","Paris","Paris",
+          48.8718378, 2.3422204);
+  gpsUtil.location.Attraction attraction4=
+      new gpsUtil.location.Attraction("Stade de France","Saint Denis","Seine Saint Denis",
+          48.921329648, 2.355998576);
+  gpsUtil.location.Attraction attraction5=
+      new gpsUtil.location.Attraction("Le Moulin Rouge","Paris","Paris",
+          48.883829798, 2.325998696);
+  gpsUtil.location.Attraction attraction6=
+      new gpsUtil.location.Attraction("Vulcania","Saint Ours","Puy de Dôme",
+          45.813797, 2.942556);
+
 
   Provider provider= new Provider(new UUID(1,1),"Travel Agency",120.);
   Provider provider1= new Provider(new UUID(1,1),"Dream Travel",115.);
@@ -59,7 +76,7 @@ public class TourGuideServiceUnitTest {
   @Test
   public void givenAUserWhenGetUserLocationThenGetUserLocation() {
     //Given
-    when(mockGps.getUserLocation(any())).thenReturn(userPosition);
+    when(mockGps.getUserLocation(any())).thenReturn(locationParis);
 
     //When
     gpsUtil.location.VisitedLocation actual=classUnderTest.getUserLocation(user);
@@ -106,7 +123,7 @@ public class TourGuideServiceUnitTest {
   @Test
   public void givenAUserWhenTrackUserLocationThenUserLocationFound() {
     //Given
-    when(mockGps.getUserLocation(any())).thenReturn(userPosition);
+    when(mockGps.getUserLocation(any())).thenReturn(locationParis);
 
     //When
     gpsUtil.location.VisitedLocation actual=classUnderTest.trackUserLocation(user);
@@ -119,25 +136,25 @@ public class TourGuideServiceUnitTest {
   @Test
   public void givenAUserWithoutVisitedLocationWhenGetUserLocationThenTrackUserLocation(){
     //Given
-    when(mockGps.getUserLocation(any())).thenReturn(userPosition);
+    when(mockGps.getUserLocation(any())).thenReturn(locationParis);
 
     //When
     gpsUtil.location.VisitedLocation actual= classUnderTest.getUserLocation(user);
 
     //Then
-    assertSame(userPosition,actual);
+    assertSame(locationParis,actual);
   }
 
   @Test
   public void givenAUserWithVisitedLocationWhenGetUserLocationThenTheLastVisitedUserLocation() {
     //Given
-    user.addToVisitedLocations(userPosition);
+    user.addToVisitedLocations(locationParis);
 
     //When
     gpsUtil.location.VisitedLocation actual= classUnderTest.getUserLocation(user);
 
     //Then
-    assertSame(userPosition,actual);
+    assertSame(locationParis,actual);
   }
 
   @Test
@@ -153,8 +170,8 @@ public class TourGuideServiceUnitTest {
   @Test
   public void givenAUserWithTwoRewardsWhenGetUserRewardsThenAListOfUserReward() {
     //Given
-    user.addUserReward(new UserReward(userPosition1,attraction1));
-    user.addUserReward(new UserReward(userPosition,attraction));
+    user.addUserReward(new UserReward(locationRennes,attraction1));
+    user.addUserReward(new UserReward(locationParis,attraction));
 
     //When
     List<UserReward> actual= classUnderTest.getUserRewards(user);
@@ -166,8 +183,8 @@ public class TourGuideServiceUnitTest {
   @Test
   public void givenAUserWithSameRewardsWhenGetUserRewardsThenAListOfUserRewardWithoutDuplicateReard() {
     //Given
-    user.addUserReward(new UserReward(userPosition,attraction));
-    user.addUserReward(new UserReward(userPosition,attraction));
+    user.addUserReward(new UserReward(locationParis,attraction));
+    user.addUserReward(new UserReward(locationParis,attraction));
 
     //When
     List<UserReward> actual= classUnderTest.getUserRewards(user);
@@ -179,7 +196,7 @@ public class TourGuideServiceUnitTest {
   @Test
   public void givenAUserWithRewardPointsWhenGetTripDealsThenReturnListOfTwoProviders() {
     //Given
-    user.addUserReward(new UserReward(userPosition,attraction,30));
+    user.addUserReward(new UserReward(locationParis,attraction,30));
 
     when(mockPricer.getPrice(anyString(),any(),anyInt(),anyInt(),anyInt(),anyInt()))
         .thenReturn(Arrays.asList(provider,provider1));
@@ -192,15 +209,18 @@ public class TourGuideServiceUnitTest {
   }
 
   @Test
-  public void givenAVisitedLocationWhenGetNearByAttractionsThenReturnListOfTwoAttractions() {
+  public void givenAUserAtParisWhenGetNearByAttractionsThenReturnListOfFiveNearlyAttractions() {
     //Given
-    when(mockGps.getAttractions()).thenReturn(Arrays.asList(attraction,attraction1));
-    when(mockRewards.isWithinAttractionProximity(any(),any())).thenReturn(true);
+    user.getVisitedLocations().add(locationParis);
+
+    when(mockGps.getAttractions()).thenReturn(Arrays.asList(attraction,attraction1,attraction2,attraction3,
+        attraction4,attraction5,attraction6));
+
 
     //When
-    List<gpsUtil.location.Attraction>actual= classUnderTest.getNearByAttractions(userPosition);
+    List<AttractionDto>actual= classUnderTest.getNearByAttractions(user);
 
     //Then
-    assertThat(actual.size()).isEqualTo(2);
+    assertThat(actual.size()).isEqualTo(5);
   }
 }
