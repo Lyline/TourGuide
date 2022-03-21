@@ -7,7 +7,6 @@ import tourGuide.user.User;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class UserGeneratorRepositoryImpl implements UserRepository {

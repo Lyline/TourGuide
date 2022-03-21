@@ -3,7 +3,6 @@ package tourGuide;
 import gpsUtil.GpsUtil;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import rewardCentral.RewardCentral;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
@@ -55,7 +54,7 @@ public class TestPerformance {
 
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService,new TripPricer(),new UserGeneratorRepositoryImpl());
 
-		tourGuideService.initUsers(100);
+		tourGuideService.initUsers(100000);
 
 		//When
 		StopWatch stopWatch = new StopWatch();
@@ -67,7 +66,7 @@ public class TestPerformance {
 
 		//Then
 		System.out.println("highVolumeTrackLocation: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
-		assertTrue(TimeUnit.SECONDS.toSeconds(5) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
+		assertTrue(TimeUnit.MINUTES.toSeconds(5) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	}
 	
 	/*@Ignore

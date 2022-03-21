@@ -29,9 +29,8 @@ public class TourGuideService {
 	private final GpsUtil gpsUtil;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer;
-	//private final TripPricer tripPricer = new TripPricer();
 
-	public /*final*/ Tracker tracker =new Tracker(this);
+	public Tracker tracker;
 
 	private Logger logger= LoggerFactory.getLogger(TourGuideService.class);
 
@@ -42,8 +41,6 @@ public class TourGuideService {
 		this.rewardsService = rewardsService;
 		this.tripPricer= tripPricer;
 		this.repository= repository;
-
-		addShutDownHook();
 	}
 	
 	public User getUser(String userName) {
@@ -120,11 +117,12 @@ public class TourGuideService {
 
 		if (selectedAttractions.size()>=5){
 			return selectedAttractions.subList(0,5);
-		}else return selectedAttractions.subList(0,selectedAttractions.size());
+		}else return selectedAttractions;
 	}
 
 	public void initTracker(){
 		tracker=new Tracker(this);
+		addShutDownHook();
 	}
 
 	public void initUsers(int nbUsers){
