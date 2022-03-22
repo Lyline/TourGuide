@@ -98,6 +98,17 @@ public class TourGuideService {
 		return providers;
 	}
 
+	public List<Provider> getTripCustomPricer(User user, int adultsNumber, int childrenNumber, int nightStay){
+		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+
+		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), adultsNumber,
+				childrenNumber, nightStay, cumulativeRewardPoints);
+
+		user.setTripDeals(providers);
+
+		return providers;
+	}
+
 	public List<AttractionDto> getNearByAttractions(User user) {
 		List<AttractionDto> sortedAttractions= new ArrayList<>();
 		List<Attraction> attractions= gpsUtil.getAttractions();

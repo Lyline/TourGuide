@@ -67,9 +67,17 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
+    public List<Provider> getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
-    	return JsonStream.serialize(providers);
+    	return providers;
+    }
+
+    @RequestMapping("/getTripCustomPricer")
+    public List<Provider> getTripCustomPricer(@RequestParam String username,
+                                        @RequestParam int adults,
+                                        @RequestParam int children,
+                                        @RequestParam int nightsStay){
+      return tourGuideService.getTripCustomPricer(getUser(username),adults,children,nightsStay);
     }
     
     private User getUser(String userName) {

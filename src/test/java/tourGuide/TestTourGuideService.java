@@ -82,7 +82,6 @@ public class TestTourGuideService {
 
 	@Test
 	public void getNearbyAttractions() {
-		tourGuideService.trackUserLocation(user);
 
 		List<AttractionDto> attractions = tourGuideService.getNearByAttractions(user);
 		
@@ -93,9 +92,7 @@ public class TestTourGuideService {
 
 	@Test
 	public void getTripDeals() {
-				List<Provider> providers = tourGuideService.getTripDeals(user);
-		
-		tourGuideService.tracker.stopTracking();
+		List<Provider> providers = tourGuideService.getTripDeals(user);
 		
 		assertEquals(10, providers.size());
 	}
