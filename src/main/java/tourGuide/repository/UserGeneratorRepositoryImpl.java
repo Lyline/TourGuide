@@ -2,6 +2,8 @@ package tourGuide.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tourGuide.proxy.gpsProxy.location.Location;
+import tourGuide.proxy.gpsProxy.location.VisitedLocation;
 import tourGuide.user.User;
 
 import java.time.LocalDateTime;
@@ -59,7 +61,7 @@ public class UserGeneratorRepositoryImpl implements UserRepository {
   }
 
   private void generateUserLocationHistory(User user) {
-    IntStream.range(0, 3).forEach(i-> user.addToVisitedLocations(new gpsUtil.location.VisitedLocation(user.getUserId(), new gpsUtil.location.Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime())));
+    IntStream.range(0, 3).forEach(i-> user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime())));
   }
 
   private double generateRandomLongitude() {

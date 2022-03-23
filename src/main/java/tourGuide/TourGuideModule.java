@@ -1,9 +1,9 @@
 package tourGuide;
 
-import gpsUtil.GpsUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import rewardCentral.RewardCentral;
+import tourGuide.proxy.gpsProxy.GpsProxy;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
@@ -13,16 +13,10 @@ import java.util.Locale;
 
 @Configuration
 public class TourGuideModule {
-
-	@Bean
-	public GpsUtil getGpsUtil() {
-		Locale.setDefault(Locale.US);
-		return new GpsUtil();
-	}
 	
 	@Bean
 	public RewardsService getRewardsService() {
-		return new RewardsService(getGpsUtil(), getRewardCentral());
+		return new RewardsService(getGpsProxy(), getRewardCentral());
 	}
 	
 	@Bean
@@ -37,5 +31,10 @@ public class TourGuideModule {
 
 	@Bean
 	public TripPricer getTripPricer(){return new TripPricer();}
-	
+
+	@Bean
+	public GpsProxy getGpsProxy(){
+		Locale.setDefault(Locale.US);
+		return new GpsProxy();
+	}
 }

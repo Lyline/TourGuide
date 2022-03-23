@@ -1,12 +1,12 @@
 package tourGuide.service;
 
-import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
-import gpsUtil.location.Location;
-import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tourGuide.proxy.gpsProxy.GpsProxy;
+import tourGuide.proxy.gpsProxy.location.Attraction;
+import tourGuide.proxy.gpsProxy.location.Location;
+import tourGuide.proxy.gpsProxy.location.VisitedLocation;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.dto.AttractionDto;
 import tourGuide.tracker.Tracker;
@@ -25,8 +25,7 @@ import static tourGuide.repository.UserGeneratorRepositoryImpl.tripPricerApiKey;
 @Service
 public class TourGuideService {
 	private UserRepository repository;
-
-	private final GpsUtil gpsUtil;
+	private final GpsProxy gpsProxy;
 	private final RewardsService rewardsService;
 	private final TripPricer tripPricer;
 
@@ -36,8 +35,8 @@ public class TourGuideService {
 
 	boolean testMode = true;
 	
-	public TourGuideService(GpsUtil gpsUtil, RewardsService rewardsService, TripPricer tripPricer, UserRepository repository) {
-		this.gpsUtil = gpsUtil;
+	public TourGuideService(GpsProxy gpsProxy, RewardsService rewardsService, TripPricer tripPricer, UserRepository repository) {
+		this.gpsProxy = gpsProxy;
 		this.rewardsService = rewardsService;
 		this.tripPricer= tripPricer;
 		this.repository= repository;
@@ -66,7 +65,7 @@ public class TourGuideService {
 	}
 
 	public VisitedLocation trackUserLocation(User user) {
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
+		VisitedLocation visitedLocation = gpsProxy.getUserLocation(user);
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
 		return visitedLocation;
@@ -78,7 +77,7 @@ public class TourGuideService {
 		if(user.getVisitedLocations().size()>0){
 			userLocation= user.getLastVisitedLocation();
 		}else {
-			userLocation= gpsUtil.getUserLocation(user.getUserId());
+			userLocation= gpsProxy.getUserLocation(user);
 		}
 		return userLocation;
 	}
@@ -111,7 +110,7 @@ public class TourGuideService {
 
 	public List<AttractionDto> getNearByAttractions(User user) {
 		List<AttractionDto> sortedAttractions= new ArrayList<>();
-		List<Attraction> attractions= gpsUtil.getAttractions();
+		List<Attraction> attractions= gpsProxy.getAttractions();
 
 		for(Attraction attract: attractions){
 			double distance= rewardsService.getDistance(

@@ -1,10 +1,10 @@
 package tourGuide;
 
-import gpsUtil.GpsUtil;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Before;
 import org.junit.Test;
 import rewardCentral.RewardCentral;
+import tourGuide.proxy.gpsProxy.GpsProxy;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -43,18 +43,16 @@ public class TestPerformance {
 		Locale.setDefault(Locale.US);
 	}
 
-	//@Ignore
 	@Test
 	public void highVolumeTrackLocation() {
 
 		//Given
-		GpsUtil gpsUtil = new GpsUtil();
-		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		GpsProxy gpsProxy = new GpsProxy();
+		RewardsService rewardsService = new RewardsService(gpsProxy, new RewardCentral());
+		TourGuideService tourGuideService = new TourGuideService(gpsProxy, rewardsService,new TripPricer(),new UserGeneratorRepositoryImpl());
+
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-
-		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService,new TripPricer(),new UserGeneratorRepositoryImpl());
-
-		tourGuideService.initUsers(100000);
+		tourGuideService.initUsers(10000);
 
 		//When
 		StopWatch stopWatch = new StopWatch();

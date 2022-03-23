@@ -17,7 +17,7 @@ public class UserGeneratorRepositoryTest {
   @Test
   public void givenAUserExistWhenGetUserThenUserIsFound() {
     //Given
-    classUnderTest.initializeInternalUsers(0);
+    classUnderTest.initializeInternalUsers(1);
 
     //When
     User actual= classUnderTest.getUser("internalUser0");

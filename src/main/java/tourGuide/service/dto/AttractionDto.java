@@ -1,14 +1,15 @@
 package tourGuide.service.dto;
 
-import gpsUtil.location.Attraction;
-import gpsUtil.location.VisitedLocation;
+import tourGuide.proxy.gpsProxy.location.Attraction;
+import tourGuide.proxy.gpsProxy.location.VisitedLocation;
 
 public class AttractionDto {
-  private gpsUtil.location.Attraction attraction;
-  private gpsUtil.location.VisitedLocation userLocation;
+  //supprimer dependance a gpsUtil -> creer champs indépendants
+  private Attraction attraction;
+  private VisitedLocation userLocation;
   private double distance;
 
-  public AttractionDto(Attraction attraction, gpsUtil.location.VisitedLocation userLocation, double distance) {
+  public AttractionDto(Attraction attraction, VisitedLocation userLocation, double distance) {
     this.attraction = attraction;
     this.userLocation = userLocation;
     this.distance = distance;

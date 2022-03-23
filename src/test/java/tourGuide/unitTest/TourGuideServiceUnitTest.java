@@ -1,7 +1,10 @@
 package tourGuide.unitTest;
 
-import gpsUtil.GpsUtil;
 import org.junit.Test;
+import tourGuide.proxy.gpsProxy.GpsProxy;
+import tourGuide.proxy.gpsProxy.location.Attraction;
+import tourGuide.proxy.gpsProxy.location.Location;
+import tourGuide.proxy.gpsProxy.location.VisitedLocation;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -24,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 public class TourGuideServiceUnitTest {
 
-  private GpsUtil mockGps= mock(GpsUtil.class);
+  private GpsProxy mockGps= mock(GpsProxy.class);
   private RewardsService mockRewards= mock(RewardsService.class);
   private TripPricer mockPricer= mock(TripPricer.class);
 
@@ -35,38 +38,38 @@ public class TourGuideServiceUnitTest {
   User user = new User(UUID.randomUUID(), "Jean", "000", "jon@tourGuide.com");
   User user2 = new User(UUID.randomUUID(), "Astrid", "000", "jon2@tourGuide.com");
 
-  gpsUtil.location.VisitedLocation locationParis =
-      new gpsUtil.location.VisitedLocation(
+ VisitedLocation locationParis =
+      new VisitedLocation(
           user.getUserId(),
-          new gpsUtil.location.Location(48.856614,2.3522219),
+          new Location(48.856614,2.3522219),
           new Date());
 
-  gpsUtil.location.VisitedLocation locationRennes =
-      new gpsUtil.location.VisitedLocation(
+  VisitedLocation locationRennes =
+      new VisitedLocation(
           user.getUserId(),
-          new gpsUtil.location.Location(	48.117266 ,-1.6777926),
+          new Location(	48.117266 ,-1.6777926),
           new Date());
 
-  gpsUtil.location.Attraction attraction=
-      new gpsUtil.location.Attraction("Eurodisney","Marne la Vallée","Seine et Marne",
+  Attraction attraction=
+      new Attraction("Eurodisney","Marne la Vallée","Seine et Marne",
           48.871900,2.776623);
-  gpsUtil.location.Attraction attraction1=
-      new gpsUtil.location.Attraction("Futuroscope","Poitiers","Vendée",
+  Attraction attraction1=
+      new Attraction("Futuroscope","Poitiers","Vendée",
           46.580224,0.340375);
-  gpsUtil.location.Attraction attraction2=
-      new gpsUtil.location.Attraction("Musée Jules Verne","Nantes","Loire Atlantique",
+  Attraction attraction2=
+      new Attraction("Musée Jules Verne","Nantes","Loire Atlantique",
           47.201616, -1.577347);
-  gpsUtil.location.Attraction attraction3=
-      new gpsUtil.location.Attraction("Musée Grévin","Paris","Paris",
+  Attraction attraction3=
+      new Attraction("Musée Grévin","Paris","Paris",
           48.8718378, 2.3422204);
-  gpsUtil.location.Attraction attraction4=
-      new gpsUtil.location.Attraction("Stade de France","Saint Denis","Seine Saint Denis",
+  Attraction attraction4=
+      new Attraction("Stade de France","Saint Denis","Seine Saint Denis",
           48.921329648, 2.355998576);
-  gpsUtil.location.Attraction attraction5=
-      new gpsUtil.location.Attraction("Le Moulin Rouge","Paris","Paris",
+  Attraction attraction5=
+      new Attraction("Le Moulin Rouge","Paris","Paris",
           48.883829798, 2.325998696);
-  gpsUtil.location.Attraction attraction6=
-      new gpsUtil.location.Attraction("Vulcania","Saint Ours","Puy de Dôme",
+  Attraction attraction6=
+      new Attraction("Vulcania","Saint Ours","Puy de Dôme",
           45.813797, 2.942556);
 
 
@@ -79,11 +82,11 @@ public class TourGuideServiceUnitTest {
     when(mockGps.getUserLocation(any())).thenReturn(locationParis);
 
     //When
-    gpsUtil.location.VisitedLocation actual=classUnderTest.getUserLocation(user);
+    VisitedLocation actual=classUnderTest.getUserLocation(user);
 
     //Then
     assertSame(actual,user.getLastVisitedLocation());
-    verify(mockGps,times(1)).getUserLocation(user.getUserId());
+    verify(mockGps,times(1)).getUserLocation(user);
   }
 
   @Test
@@ -126,11 +129,11 @@ public class TourGuideServiceUnitTest {
     when(mockGps.getUserLocation(any())).thenReturn(locationParis);
 
     //When
-    gpsUtil.location.VisitedLocation actual=classUnderTest.trackUserLocation(user);
+    VisitedLocation actual=classUnderTest.trackUserLocation(user);
 
     //Then
     assertSame(actual,user.getLastVisitedLocation());
-    verify(mockGps,times(1)).getUserLocation(user.getUserId());
+    verify(mockGps,times(1)).getUserLocation(user);
   }
 
   @Test
@@ -139,7 +142,7 @@ public class TourGuideServiceUnitTest {
     when(mockGps.getUserLocation(any())).thenReturn(locationParis);
 
     //When
-    gpsUtil.location.VisitedLocation actual= classUnderTest.getUserLocation(user);
+    VisitedLocation actual= classUnderTest.getUserLocation(user);
 
     //Then
     assertSame(locationParis,actual);
@@ -151,7 +154,7 @@ public class TourGuideServiceUnitTest {
     user.addToVisitedLocations(locationParis);
 
     //When
-    gpsUtil.location.VisitedLocation actual= classUnderTest.getUserLocation(user);
+    VisitedLocation actual= classUnderTest.getUserLocation(user);
 
     //Then
     assertSame(locationParis,actual);

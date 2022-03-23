@@ -1,8 +1,9 @@
 package tourGuide;
 
-import gpsUtil.location.VisitedLocation;
+//import gpsUtil.location.VisitedLocation;
 import org.junit.Before;
 import org.junit.Test;
+import tourGuide.proxy.gpsProxy.location.VisitedLocation;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
@@ -26,7 +27,7 @@ public class TestTourGuideService {
 	TripPricer tripPricer= new TripPricer();
 
 	RewardsService rewardsService = tourGuideModule.getRewardsService();
-	TourGuideService tourGuideService = new TourGuideService(tourGuideModule.getGpsUtil(), rewardsService,tripPricer,repository);
+	TourGuideService tourGuideService = new TourGuideService(tourGuideModule.getGpsProxy(), rewardsService,tripPricer,repository);
 
 	User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 	User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
@@ -38,9 +39,12 @@ public class TestTourGuideService {
 
 	@Test
 	public void getUserLocation() {
+		tourGuideService.initTracker();
 
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
+
 		tourGuideService.tracker.stopTracking();
+
 		assertTrue(visitedLocation.userId.equals(user.getUserId()));
 	}
 	
@@ -51,8 +55,6 @@ public class TestTourGuideService {
 		
 		User retrivedUser = tourGuideService.getUser(user.getUserName());
 		User retrivedUser2 = tourGuideService.getUser(user2.getUserName());
-
-		tourGuideService.tracker.stopTracking();
 		
 		assertEquals(user, retrivedUser);
 		assertEquals(user2, retrivedUser2);
@@ -65,14 +67,14 @@ public class TestTourGuideService {
 		
 		List<User> allUsers = tourGuideService.getAllUsers();
 
-		tourGuideService.tracker.stopTracking();
-		
 		assertTrue(allUsers.contains(user));
 		assertTrue(allUsers.contains(user2));
 	}
 	
 	@Test
 	public void trackUser() {
+		tourGuideService.initTracker();
+
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 		
 		tourGuideService.tracker.stopTracking();
@@ -82,6 +84,8 @@ public class TestTourGuideService {
 
 	@Test
 	public void getNearbyAttractions() {
+		tourGuideService.initTracker();
+		tourGuideService.trackUserLocation(user);
 
 		List<AttractionDto> attractions = tourGuideService.getNearByAttractions(user);
 		
