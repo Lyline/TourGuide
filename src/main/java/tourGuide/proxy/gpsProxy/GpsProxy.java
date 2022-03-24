@@ -9,6 +9,7 @@ import tourGuide.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class GpsProxy {
@@ -19,6 +20,8 @@ public class GpsProxy {
   }
 
   public VisitedLocation getUserLocation(User user){
+    Locale.setDefault(Locale.US);
+
     VisitedLocation location= new VisitedLocation();
     gpsUtil.location.VisitedLocation userLocation=gpsUtil.getUserLocation(user.getUserId());
 

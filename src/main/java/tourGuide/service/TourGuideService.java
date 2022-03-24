@@ -7,13 +7,13 @@ import tourGuide.proxy.gpsProxy.GpsProxy;
 import tourGuide.proxy.gpsProxy.location.Attraction;
 import tourGuide.proxy.gpsProxy.location.Location;
 import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxy.tripPricerProxy.Provider;
+import tourGuide.proxy.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.dto.AttractionDto;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
-import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,7 +27,7 @@ public class TourGuideService {
 	private UserRepository repository;
 	private final GpsProxy gpsProxy;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricer;
+	private final TripPricer tripPricerProxy;
 
 	public Tracker tracker;
 
@@ -35,10 +35,10 @@ public class TourGuideService {
 
 	boolean testMode = true;
 	
-	public TourGuideService(GpsProxy gpsProxy, RewardsService rewardsService, TripPricer tripPricer, UserRepository repository) {
+	public TourGuideService(GpsProxy gpsProxy, RewardsService rewardsService, TripPricer tripPricerProxy, UserRepository repository) {
 		this.gpsProxy = gpsProxy;
 		this.rewardsService = rewardsService;
-		this.tripPricer= tripPricer;
+		this.tripPricerProxy = tripPricerProxy;
 		this.repository= repository;
 	}
 	
@@ -89,7 +89,7 @@ public class TourGuideService {
 	public List<Provider> getTripDeals(User user) {
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 
-		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulativeRewardPoints);
 
 		user.setTripDeals(providers);
@@ -100,7 +100,7 @@ public class TourGuideService {
 	public List<Provider> getTripCustomPricer(User user, int adultsNumber, int childrenNumber, int nightStay){
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 
-		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), adultsNumber,
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId(), adultsNumber,
 				childrenNumber, nightStay, cumulativeRewardPoints);
 
 		user.setTripDeals(providers);

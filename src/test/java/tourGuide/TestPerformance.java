@@ -5,11 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import tourGuide.proxy.gpsProxy.GpsProxy;
 import tourGuide.proxy.rewardCentralProxy.RewardProxy;
+import tourGuide.proxy.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.tracker.TrackUser;
-import tripPricer.TripPricer;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;

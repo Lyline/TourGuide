@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxy.tripPricerProxy.Provider;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
 import tourGuide.user.User;
-import tripPricer.Provider;
 
 import java.util.List;
 
@@ -73,16 +73,13 @@ public class TourGuideController {
     }
 
     @RequestMapping("/getTripCustomPricer")
-    public List<Provider> getTripCustomPricer(@RequestParam String username,
-                                        @RequestParam int adults,
-                                        @RequestParam int children,
-                                        @RequestParam int nightsStay){
+    public List<Provider> getTripCustomPricer(@RequestParam String username, @RequestParam int adults,
+                                        @RequestParam int children, @RequestParam int nightsStay){
       return tourGuideService.getTripCustomPricer(getUser(username),adults,children,nightsStay);
     }
     
     private User getUser(String userName) {
     	return tourGuideService.getUser(userName);
     }
-   
 
 }

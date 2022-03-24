@@ -4,12 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tourGuide.proxy.gpsProxy.GpsProxy;
 import tourGuide.proxy.rewardCentralProxy.RewardProxy;
+import tourGuide.proxy.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
-import tripPricer.TripPricer;
-
-import java.util.Locale;
 
 @Configuration
 public class TourGuideModule {
@@ -25,11 +23,10 @@ public class TourGuideModule {
 	}
 
 	@Bean
-	public TripPricer getTripPricer(){return new TripPricer();}
+	public TripPricer getTripPricerProxy(){return new TripPricer();}
 
 	@Bean
 	public GpsProxy getGpsProxy(){
-		Locale.setDefault(Locale.US);
 		return new GpsProxy();
 	}
 
@@ -37,4 +34,5 @@ public class TourGuideModule {
 	public RewardProxy getRewardProxy(){
 		return new RewardProxy();
 	}
+
 }

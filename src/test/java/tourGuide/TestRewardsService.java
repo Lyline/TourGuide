@@ -5,13 +5,13 @@ import tourGuide.proxy.gpsProxy.GpsProxy;
 import tourGuide.proxy.gpsProxy.location.Attraction;
 import tourGuide.proxy.gpsProxy.location.VisitedLocation;
 import tourGuide.proxy.rewardCentralProxy.RewardProxy;
+import tourGuide.proxy.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
-import tripPricer.TripPricer;
 
 import java.util.Date;
 import java.util.List;
@@ -37,8 +37,6 @@ public class TestRewardsService {
 		tourGuideService.trackUserLocation(user);
 
 		List<UserReward> userRewards = user.getUserRewards();
-
-		tourGuideService.tracker.stopTracking();
 
 		assertTrue(userRewards.size() == 1);
 	}

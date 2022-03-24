@@ -5,14 +5,14 @@ import tourGuide.proxy.gpsProxy.GpsProxy;
 import tourGuide.proxy.gpsProxy.location.Attraction;
 import tourGuide.proxy.gpsProxy.location.Location;
 import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxy.tripPricerProxy.Provider;
+import tourGuide.proxy.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
-import tripPricer.Provider;
-import tripPricer.TripPricer;
 
 import java.util.Arrays;
 import java.util.Date;
