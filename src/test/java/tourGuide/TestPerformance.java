@@ -3,8 +3,8 @@ package tourGuide;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Before;
 import org.junit.Test;
-import rewardCentral.RewardCentral;
 import tourGuide.proxy.gpsProxy.GpsProxy;
+import tourGuide.proxy.rewardCentralProxy.RewardProxy;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -48,7 +48,7 @@ public class TestPerformance {
 
 		//Given
 		GpsProxy gpsProxy = new GpsProxy();
-		RewardsService rewardsService = new RewardsService(gpsProxy, new RewardCentral());
+		RewardsService rewardsService = new RewardsService(gpsProxy, new RewardProxy());
 		TourGuideService tourGuideService = new TourGuideService(gpsProxy, rewardsService,new TripPricer(),new UserGeneratorRepositoryImpl());
 
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes

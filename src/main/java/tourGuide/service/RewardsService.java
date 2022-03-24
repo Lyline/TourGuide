@@ -1,11 +1,11 @@
 package tourGuide.service;
 
 import org.springframework.stereotype.Service;
-import rewardCentral.RewardCentral;
 import tourGuide.proxy.gpsProxy.GpsProxy;
 import tourGuide.proxy.gpsProxy.location.Attraction;
 import tourGuide.proxy.gpsProxy.location.Location;
 import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxy.rewardCentralProxy.RewardProxy;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
@@ -20,11 +20,11 @@ public class RewardsService {
 	private int proximityBuffer = defaultProximityBuffer;
 	private int attractionProximityRange = 200;
 	private final GpsProxy gpsProxy;
-	private final RewardCentral rewardsCentral;
+	private final RewardProxy rewardProxy;
 	
-	public RewardsService(GpsProxy gpsProxy, RewardCentral rewardCentral) {
+	public RewardsService(GpsProxy gpsProxy, RewardProxy rewardProxy) {
 		this.gpsProxy = gpsProxy;
-		this.rewardsCentral = rewardCentral;
+		this.rewardProxy = rewardProxy;
 	}
 	
 	public void setProximityBuffer(int proximityBuffer) {
@@ -49,20 +49,17 @@ public class RewardsService {
 			}
 		}
 	}
-	
-	/*
-		Method is not used
 
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
-		return getDistance(attraction, location) > attractionProximityRange ? false : true;
-	}*/
+		return !(getDistance(attraction, location) > attractionProximityRange);
+	}
 	
 	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
-		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
+		return !(getDistance(attraction, visitedLocation.location) > proximityBuffer);
 	}
 	
 	private int getRewardPoints(Attraction attraction, User user) {
-		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+		return rewardProxy.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 	
 	public double getDistance(Location loc1, Location loc2) {
