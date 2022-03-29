@@ -2,30 +2,37 @@ package tourGuide;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import gpsUtil.GpsUtil;
-import rewardCentral.RewardCentral;
+import tourGuide.proxy.gpsProxy.GpsProxy;
+import tourGuide.proxy.rewardCentralProxy.RewardProxy;
+import tourGuide.proxy.tripPricerProxy.TripPricer;
+import tourGuide.repository.UserGeneratorRepositoryImpl;
+import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
-
-import java.util.Locale;
 
 @Configuration
 public class TourGuideModule {
 	
 	@Bean
-	public GpsUtil getGpsUtil() {
-		Locale.setDefault(Locale.US);
-		return new GpsUtil();
-	}
-	
-	@Bean
 	public RewardsService getRewardsService() {
-		return new RewardsService(getGpsUtil(), getRewardCentral());
+		return new RewardsService(getGpsProxy(), getRewardProxy());
 	}
-	
+
 	@Bean
-	public RewardCentral getRewardCentral() {
-		return new RewardCentral();
+	public UserRepository getUserRepository() {
+		return new UserGeneratorRepositoryImpl();
 	}
-	
+
+	@Bean
+	public TripPricer getTripPricerProxy(){return new TripPricer();}
+
+	@Bean
+	public GpsProxy getGpsProxy(){
+		return new GpsProxy();
+	}
+
+	@Bean
+	public RewardProxy getRewardProxy(){
+		return new RewardProxy();
+	}
+
 }

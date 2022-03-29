@@ -1,18 +1,17 @@
 package tourGuide;
 
-import java.util.List;
-
+import com.jsoniter.output.JsonStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.jsoniter.output.JsonStream;
-
-import gpsUtil.location.VisitedLocation;
+import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxy.tripPricerProxy.Provider;
 import tourGuide.service.TourGuideService;
+import tourGuide.service.dto.AttractionDto;
 import tourGuide.user.User;
-import tripPricer.Provider;
+
+import java.util.List;
 
 @RestController
 public class TourGuideController {
@@ -32,18 +31,19 @@ public class TourGuideController {
     }
     
     //  TODO: Change this method to no longer return a List of Attractions.
- 	//  Instead: Get the closest five tourist attractions to the user - no matter how far away they are.
- 	//  Return a new JSON object that contains:
-    	// Name of Tourist attraction, 
-        // Tourist attractions lat/long, 
-        // The user's location lat/long, 
-        // The distance in miles between the user's location and each of the attractions.
-        // The reward points for visiting each Attraction.
-        //    Note: Attraction reward points can be gathered from RewardsCentral
+ 	  //  Instead: Get the closest five tourist attractions to the user - no matter how far away they are.
+ 	  //  Return a new JSON object that contains:
+    	// => Name of Tourist attraction,
+      // =>Tourist attractions lat/long,
+      // =>The user's location lat/long,
+      // =>The distance in miles between the user's location and each of the attractions.
+
+      // != The reward points for visiting each Attraction.
+      //    Note: Attraction reward points can be gathered from RewardsCentral
     @RequestMapping("/getNearbyAttractions") 
-    public String getNearbyAttractions(@RequestParam String userName) {
-    	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-    	return JsonStream.serialize(tourGuideService.getNearByAttractions(visitedLocation));
+    public List<AttractionDto> getNearbyAttractions(@RequestParam String userName) {
+    	tourGuideService.getUserLocation(getUser(userName));
+    	return tourGuideService.getNearByAttractions(getUser(userName));
     }
     
     @RequestMapping("/getRewards") 
@@ -67,14 +67,19 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getTripDeals")
-    public String getTripDeals(@RequestParam String userName) {
+    public List<Provider> getTripDeals(@RequestParam String userName) {
     	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
-    	return JsonStream.serialize(providers);
+    	return providers;
+    }
+
+    @RequestMapping("/getTripCustomPricer")
+    public List<Provider> getTripCustomPricer(@RequestParam String username, @RequestParam int adults,
+                                        @RequestParam int children, @RequestParam int nightsStay){
+      return tourGuideService.getTripCustomPricer(getUser(username),adults,children,nightsStay);
     }
     
     private User getUser(String userName) {
     	return tourGuideService.getUser(userName);
     }
-   
 
 }

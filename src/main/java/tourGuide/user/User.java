@@ -1,12 +1,12 @@
 package tourGuide.user;
 
+import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxy.tripPricerProxy.Provider;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import gpsUtil.location.VisitedLocation;
-import tripPricer.Provider;
 
 public class User {
 	private final UUID userId;
@@ -18,6 +18,7 @@ public class User {
 	private List<UserReward> userRewards = new ArrayList<>();
 	private UserPreferences userPreferences = new UserPreferences();
 	private List<Provider> tripDeals = new ArrayList<>();
+
 	public User(UUID userId, String userName, String phoneNumber, String emailAddress) {
 		this.userId = userId;
 		this.userName = userName;
@@ -70,7 +71,12 @@ public class User {
 	}
 	
 	public void addUserReward(UserReward userReward) {
-		if(userRewards.stream().filter(r -> !r.attraction.attractionName.equals(userReward.attraction)).count() == 0) {
+		UserReward rewardExist= userRewards.stream()
+				.filter(r-> r.attraction.equals(userReward.attraction))
+				.findAny()
+				.orElse(null);
+
+		if(rewardExist==null){
 			userRewards.add(userReward);
 		}
 	}
