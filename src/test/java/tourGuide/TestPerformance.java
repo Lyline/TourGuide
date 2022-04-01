@@ -1,11 +1,11 @@
 package tourGuide;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.junit.Before;
-import org.junit.Test;
-import tourGuide.proxy.gpsProxy.GpsProxy;
-import tourGuide.proxy.rewardCentralProxy.RewardProxy;
-import tourGuide.proxy.tripPricerProxy.TripPricer;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import tourGuide.proxies.gpsProxy.GpsProxy;
+import tourGuide.proxies.rewardCentralProxy.RewardProxy;
+import tourGuide.proxies.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -14,7 +14,7 @@ import tourGuide.tracker.TrackUser;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestPerformance {
 	
@@ -38,7 +38,10 @@ public class TestPerformance {
 	 *          assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	 */
 
-	@Before
+
+	private RewardProxy rewardProxy;
+
+	@BeforeAll
 	public void setUp() throws Exception {
 		Locale.setDefault(Locale.US);
 	}
@@ -48,11 +51,11 @@ public class TestPerformance {
 
 		//Given
 		GpsProxy gpsProxy = new GpsProxy();
-		RewardsService rewardsService = new RewardsService(gpsProxy, new RewardProxy());
+		RewardsService rewardsService = new RewardsService(gpsProxy, rewardProxy);
 		TourGuideService tourGuideService = new TourGuideService(gpsProxy, rewardsService,new TripPricer(),new UserGeneratorRepositoryImpl());
 
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-		tourGuideService.initUsers(10000);
+		tourGuideService.initUsers(1000);
 
 		//When
 		StopWatch stopWatch = new StopWatch();

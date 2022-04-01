@@ -1,10 +1,10 @@
 package tourGuide;
 
-import org.junit.Before;
-import org.junit.Test;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
-import tourGuide.proxy.tripPricerProxy.Provider;
-import tourGuide.proxy.tripPricerProxy.TripPricer;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import tourGuide.proxies.gpsProxy.location.VisitedLocation;
+import tourGuide.proxies.tripPricerProxy.Provider;
+import tourGuide.proxies.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
@@ -15,8 +15,8 @@ import tourGuide.user.User;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestTourGuideService {
 
@@ -32,7 +32,7 @@ public class TestTourGuideService {
 	User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 	User user2 = new User(UUID.randomUUID(), "jon2", "000", "jon2@tourGuide.com");
 
-	@Before
+	@BeforeAll
 	public void setUp() throws Exception {
 		tourGuideService.initUsers(0);
 	}

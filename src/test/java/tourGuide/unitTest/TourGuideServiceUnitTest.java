@@ -1,12 +1,12 @@
 package tourGuide.unitTest;
 
-import org.junit.Test;
-import tourGuide.proxy.gpsProxy.GpsProxy;
-import tourGuide.proxy.gpsProxy.location.Attraction;
-import tourGuide.proxy.gpsProxy.location.Location;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
-import tourGuide.proxy.tripPricerProxy.Provider;
-import tourGuide.proxy.tripPricerProxy.TripPricer;
+import org.junit.jupiter.api.Test;
+import tourGuide.proxies.gpsProxy.GpsProxy;
+import tourGuide.proxies.gpsProxy.location.Attraction;
+import tourGuide.proxies.gpsProxy.location.Location;
+import tourGuide.proxies.gpsProxy.location.VisitedLocation;
+import tourGuide.proxies.tripPricerProxy.Provider;
+import tourGuide.proxies.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

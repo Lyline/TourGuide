@@ -5,21 +5,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
-import tourGuide.proxy.tripPricerProxy.Provider;
+import tourGuide.proxies.gpsProxy.location.VisitedLocation;
+import tourGuide.proxies.rewardCentralProxy.RewardProxy;
+import tourGuide.proxies.tripPricerProxy.Provider;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
 import tourGuide.user.User;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class TourGuideController {
 
 	@Autowired
 	TourGuideService tourGuideService;
-	
-    @RequestMapping("/")
+
+  private final RewardProxy rewardProxy;
+
+  public TourGuideController(RewardProxy rewardProxy) {
+    this.rewardProxy = rewardProxy;
+  }
+
+
+  @RequestMapping("/")
     public String index() {
         return "Greetings from TourGuide!";
     }
@@ -49,6 +58,11 @@ public class TourGuideController {
     @RequestMapping("/getRewards") 
     public String getRewards(@RequestParam String userName) {
     	return JsonStream.serialize(tourGuideService.getUserRewards(getUser(userName)));
+    }
+
+    @RequestMapping("/getRewardPoint")
+    public int getRewardPoints(@RequestParam UUID attractionId,@RequestParam UUID userId){
+      return rewardProxy.getAttractionRewardPoints(attractionId,userId);
     }
     
     @RequestMapping("/getAllCurrentLocations")
