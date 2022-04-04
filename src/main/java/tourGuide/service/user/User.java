@@ -1,7 +1,7 @@
-package tourGuide.user;
+package tourGuide.service.user;
 
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
-import tourGuide.proxy.tripPricerProxy.Provider;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
+import tourGuide.proxies.tripPricerProxy.Provider;
 
 import java.util.ArrayList;
 import java.util.Date;

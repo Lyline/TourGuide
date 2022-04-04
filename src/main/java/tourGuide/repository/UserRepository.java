@@ -1,7 +1,7 @@
 package tourGuide.repository;
 
 import org.springframework.stereotype.Repository;
-import tourGuide.user.User;
+import tourGuide.service.user.User;
 
 import java.util.List;
 

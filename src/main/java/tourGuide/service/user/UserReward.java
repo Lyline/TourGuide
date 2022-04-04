@@ -1,7 +1,7 @@
-package tourGuide.user;
+package tourGuide.service.user;
 
-import tourGuide.proxy.gpsProxy.location.Attraction;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxies.gpsProxy.beans.Attraction;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
 
 public class UserReward {
 

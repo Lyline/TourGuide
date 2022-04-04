@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tourGuide.proxies.gpsProxy.location.VisitedLocation;
+import tourGuide.proxies.gpsProxy.GpsProxy;
+import tourGuide.proxies.gpsProxy.beans.Location;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
 import tourGuide.proxies.rewardCentralProxy.RewardProxy;
 import tourGuide.proxies.tripPricerProxy.Provider;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
-import tourGuide.user.User;
+import tourGuide.service.user.User;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,9 +24,11 @@ public class TourGuideController {
 	TourGuideService tourGuideService;
 
   private final RewardProxy rewardProxy;
+  private final GpsProxy gpsProxy;
 
-  public TourGuideController(RewardProxy rewardProxy) {
+  public TourGuideController(RewardProxy rewardProxy, GpsProxy gpsProxy) {
     this.rewardProxy = rewardProxy;
+    this.gpsProxy = gpsProxy;
   }
 
 
@@ -33,10 +37,10 @@ public class TourGuideController {
         return "Greetings from TourGuide!";
     }
     
-    @RequestMapping("/getLocation") 
-    public String getLocation(@RequestParam String userName) {
+    @RequestMapping("/userLocation")
+    public Location getLocation(@RequestParam String userName) {
     	VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-		return JsonStream.serialize(visitedLocation.location);
+		  return visitedLocation.getLocation();
     }
     
     //  TODO: Change this method to no longer return a List of Attractions.
@@ -46,10 +50,9 @@ public class TourGuideController {
       // =>Tourist attractions lat/long,
       // =>The user's location lat/long,
       // =>The distance in miles between the user's location and each of the attractions.
-
       // != The reward points for visiting each Attraction.
       //    Note: Attraction reward points can be gathered from RewardsCentral
-    @RequestMapping("/getNearbyAttractions") 
+    @RequestMapping("/userNearbyAttractions")
     public List<AttractionDto> getNearbyAttractions(@RequestParam String userName) {
     	tourGuideService.getUserLocation(getUser(userName));
     	return tourGuideService.getNearByAttractions(getUser(userName));

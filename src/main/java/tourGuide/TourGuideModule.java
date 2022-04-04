@@ -31,7 +31,10 @@ public class TourGuideModule {
 
 	@Bean
 	public GpsProxy getGpsProxy(){
-		return new GpsProxy();
+		return Feign.builder().client(new OkHttpClient())
+				.encoder(new GsonEncoder())
+				.decoder(new GsonDecoder())
+				.target(GpsProxy.class, "http://localhost:9001");
 	}
 
 	@Bean

@@ -1,7 +1,7 @@
 package tourGuide.service.dto;
 
-import tourGuide.proxy.gpsProxy.location.Attraction;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxies.gpsProxy.beans.Attraction;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
 
 public class AttractionDto {
   //supprimer dependance a gpsUtil -> creer champs indépendants

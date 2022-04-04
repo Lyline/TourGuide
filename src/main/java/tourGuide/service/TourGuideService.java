@@ -3,17 +3,17 @@ package tourGuide.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import tourGuide.proxy.gpsProxy.GpsProxy;
-import tourGuide.proxy.gpsProxy.location.Attraction;
-import tourGuide.proxy.gpsProxy.location.Location;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
-import tourGuide.proxy.tripPricerProxy.Provider;
-import tourGuide.proxy.tripPricerProxy.TripPricer;
+import tourGuide.proxies.gpsProxy.GpsProxy;
+import tourGuide.proxies.gpsProxy.beans.Attraction;
+import tourGuide.proxies.gpsProxy.beans.Location;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
+import tourGuide.proxies.tripPricerProxy.Provider;
+import tourGuide.proxies.tripPricerProxy.TripPricer;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.dto.AttractionDto;
+import tourGuide.service.user.User;
+import tourGuide.service.user.UserReward;
 import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,7 +35,8 @@ public class TourGuideService {
 
 	boolean testMode = true;
 	
-	public TourGuideService(GpsProxy gpsProxy, RewardsService rewardsService, TripPricer tripPricerProxy, UserRepository repository) {
+	public TourGuideService(GpsProxy gpsProxy, RewardsService rewardsService, TripPricer tripPricerProxy,
+													UserRepository repository) {
 		this.gpsProxy = gpsProxy;
 		this.rewardsService = rewardsService;
 		this.tripPricerProxy = tripPricerProxy;
@@ -65,7 +66,7 @@ public class TourGuideService {
 	}
 
 	public VisitedLocation trackUserLocation(User user) {
-		VisitedLocation visitedLocation = gpsProxy.getUserLocation(user);
+		VisitedLocation visitedLocation = gpsProxy.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
 		return visitedLocation;
@@ -77,7 +78,7 @@ public class TourGuideService {
 		if(user.getVisitedLocations().size()>0){
 			userLocation= user.getLastVisitedLocation();
 		}else {
-			userLocation= gpsProxy.getUserLocation(user);
+			userLocation= gpsProxy.getUserLocation(user.getUserId());
 		}
 		return userLocation;
 	}
