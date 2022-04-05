@@ -2,17 +2,17 @@ package tourGuide.unitTest;
 
 import org.junit.jupiter.api.Test;
 import tourGuide.proxies.gpsProxy.GpsProxy;
-import tourGuide.proxies.gpsProxy.location.Attraction;
-import tourGuide.proxies.gpsProxy.location.Location;
-import tourGuide.proxies.gpsProxy.location.VisitedLocation;
-import tourGuide.proxies.tripPricerProxy.Provider;
-import tourGuide.proxies.tripPricerProxy.TripPricer;
+import tourGuide.proxies.gpsProxy.beans.Attraction;
+import tourGuide.proxies.gpsProxy.beans.Location;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
+import tourGuide.proxies.tripPricerProxy.TripPricerProxy;
+import tourGuide.proxies.tripPricerProxy.beans.Provider;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.service.user.User;
+import tourGuide.service.user.UserReward;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -29,7 +29,7 @@ public class TourGuideServiceUnitTest {
 
   private GpsProxy mockGps= mock(GpsProxy.class);
   private RewardsService mockRewards= mock(RewardsService.class);
-  private TripPricer mockPricer= mock(TripPricer.class);
+  private TripPricerProxy mockPricer= mock(TripPricerProxy.class);
 
   private UserGeneratorRepositoryImpl repository= mock(UserGeneratorRepositoryImpl.class);
 
@@ -86,7 +86,7 @@ public class TourGuideServiceUnitTest {
 
     //Then
     assertSame(actual,user.getLastVisitedLocation());
-    verify(mockGps,times(1)).getUserLocation(user);
+    verify(mockGps,times(1)).getUserLocation(user.getUserId());
   }
 
   @Test
@@ -133,7 +133,7 @@ public class TourGuideServiceUnitTest {
 
     //Then
     assertSame(actual,user.getLastVisitedLocation());
-    verify(mockGps,times(1)).getUserLocation(user);
+    verify(mockGps,times(1)).getUserLocation(user.getUserId());
   }
 
   @Test
@@ -205,7 +205,7 @@ public class TourGuideServiceUnitTest {
         .thenReturn(Arrays.asList(provider,provider1));
 
     //When
-    List<Provider>actual= classUnderTest.getTripDeals(user);
+    List<Provider>actual= classUnderTest.getTripDeals(user, attraction.attractionId);
 
     //Then
     assertThat(actual.size()).isEqualTo(2);

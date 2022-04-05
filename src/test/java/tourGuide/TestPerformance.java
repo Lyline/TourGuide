@@ -3,9 +3,10 @@ package tourGuide;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.rewardCentralProxy.RewardProxy;
-import tourGuide.proxies.tripPricerProxy.TripPricer;
+import tourGuide.proxies.tripPricerProxy.TripPricerProxy;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
@@ -39,10 +40,17 @@ public class TestPerformance {
 	 */
 
 
+	@Autowired
 	private RewardProxy rewardProxy;
 
+	@Autowired
+	private GpsProxy gpsProxy;
+
+	@Autowired
+	private TripPricerProxy tripPricerProxy;
+
 	@BeforeAll
-	public void setUp() throws Exception {
+	static void setUp() throws Exception {
 		Locale.setDefault(Locale.US);
 	}
 
@@ -50,12 +58,12 @@ public class TestPerformance {
 	public void highVolumeTrackLocation() {
 
 		//Given
-		GpsProxy gpsProxy = new GpsProxy();
+
 		RewardsService rewardsService = new RewardsService(gpsProxy, rewardProxy);
-		TourGuideService tourGuideService = new TourGuideService(gpsProxy, rewardsService,new TripPricer(),new UserGeneratorRepositoryImpl());
+		TourGuideService tourGuideService = new TourGuideService(gpsProxy, rewardsService,tripPricerProxy,new UserGeneratorRepositoryImpl());
 
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-		tourGuideService.initUsers(1000);
+		tourGuideService.initUsers(10);
 
 		//When
 		StopWatch stopWatch = new StopWatch();

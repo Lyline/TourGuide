@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.rewardCentralProxy.RewardProxy;
-import tourGuide.proxies.tripPricerProxy.TripPricer;
+import tourGuide.proxies.tripPricerProxy.TripPricerProxy;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
@@ -27,7 +27,12 @@ public class TourGuideModule {
 	}
 
 	@Bean
-	public TripPricer getTripPricerProxy(){return new TripPricer();}
+	public TripPricerProxy getTripPricerProxy(){
+		return Feign.builder().client(new OkHttpClient())
+				.encoder(new GsonEncoder())
+				.decoder(new GsonDecoder())
+				.target(TripPricerProxy.class,"http://localhost:9003");
+	}
 
 	@Bean
 	public GpsProxy getGpsProxy(){

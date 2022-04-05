@@ -9,7 +9,7 @@ import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.gpsProxy.beans.Location;
 import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
 import tourGuide.proxies.rewardCentralProxy.RewardProxy;
-import tourGuide.proxies.tripPricerProxy.Provider;
+import tourGuide.proxies.tripPricerProxy.beans.Provider;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
 import tourGuide.service.user.User;
@@ -84,17 +84,18 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getTripDeals")
-    public List<Provider> getTripDeals(@RequestParam String userName) {
-    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName));
+    public List<Provider> getTripDeals(@RequestParam String userName, @RequestParam UUID attractionId) {
+    	List<Provider> providers = tourGuideService.getTripDeals(getUser(userName),attractionId);
     	return providers;
     }
 
     @RequestMapping("/getTripCustomPricer")
-    public List<Provider> getTripCustomPricer(@RequestParam String username, @RequestParam int adults,
+    public List<Provider> getTripCustomPricer(@RequestParam UUID attractionId,
+                                              @RequestParam String userName, @RequestParam int adults,
                                         @RequestParam int children, @RequestParam int nightsStay){
-      return tourGuideService.getTripCustomPricer(getUser(username),adults,children,nightsStay);
+      return tourGuideService.getTripCustomPricer(attractionId,userName,adults,children,nightsStay);
     }
-    
+
     private User getUser(String userName) {
     	return tourGuideService.getUser(userName);
     }

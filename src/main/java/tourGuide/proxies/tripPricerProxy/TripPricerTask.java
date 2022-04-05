@@ -1,10 +1,13 @@
-package tourGuide.proxy.tripPricerProxy;
+package tourGuide.proxies.tripPricerProxy;
+
+import tourGuide.proxies.tripPricerProxy.beans.Provider;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
 public class TripPricerTask implements Callable<List<Provider>> {
+  private TripPricerProxy tripPricerProxy;
   private final UUID attractionId;
   private final String apiKey;
   private final int adults;
@@ -20,6 +23,6 @@ public class TripPricerTask implements Callable<List<Provider>> {
   }
 
   public List<Provider> call() throws Exception {
-    return (new TripPricer()).getPrice(this.apiKey, this.attractionId, this.adults, this.children, this.nightsStay, 5);
+    return tripPricerProxy.getPrice(this.apiKey, this.attractionId, this.adults, this.children, this.nightsStay, 5);
   }
 }

@@ -2,7 +2,7 @@ package tourGuide.unitTest.repository;
 
 import org.junit.jupiter.api.Test;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
-import tourGuide.user.User;
+import tourGuide.service.user.User;
 
 import java.util.List;
 import java.util.UUID;

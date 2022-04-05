@@ -1,17 +1,18 @@
 package tourGuide;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import tourGuide.proxies.gpsProxy.GpsProxy;
-import tourGuide.proxies.gpsProxy.location.Attraction;
-import tourGuide.proxies.gpsProxy.location.VisitedLocation;
+import tourGuide.proxies.gpsProxy.beans.Attraction;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
 import tourGuide.proxies.rewardCentralProxy.RewardProxy;
-import tourGuide.proxies.tripPricerProxy.TripPricer;
+import tourGuide.proxies.tripPricerProxy.TripPricerProxy;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.service.user.User;
+import tourGuide.service.user.UserReward;
 
 import java.util.Date;
 import java.util.List;
@@ -21,12 +22,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestRewardsService {
-  GpsProxy gpsProxy = new GpsProxy();
-	RewardProxy rewardProxy;
+  @Autowired
+	private GpsProxy gpsProxy;
+
+	@Autowired
+	private RewardProxy rewardProxy;
+
+	@Autowired
+	private TripPricerProxy tripPricerProxy;
 
   RewardsService rewardsService = new RewardsService(gpsProxy, rewardProxy);
   UserRepository repository=new UserGeneratorRepositoryImpl();
-  TourGuideService tourGuideService = new TourGuideService(gpsProxy, rewardsService,new TripPricer(),repository);
+  TourGuideService tourGuideService = new TourGuideService(gpsProxy, rewardsService,tripPricerProxy,repository);
 
 	@Test
 	public void userGetRewards() {
