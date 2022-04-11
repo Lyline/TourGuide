@@ -1,7 +1,6 @@
 package tourGuide;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.gpsProxy.beans.Attraction;
 import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
@@ -22,14 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestRewardsService {
-  @Autowired
-	private GpsProxy gpsProxy;
-
-	@Autowired
-	private RewardProxy rewardProxy;
-
-	@Autowired
-	private TripPricerProxy tripPricerProxy;
+  private TourGuideModule tourGuideModule= new TourGuideModule();
+	private GpsProxy gpsProxy= tourGuideModule.getGpsProxy();
+	private RewardProxy rewardProxy= tourGuideModule.getRewardProxy();
+	private TripPricerProxy tripPricerProxy= tourGuideModule.getTripPricerProxy();
 
   RewardsService rewardsService = new RewardsService(gpsProxy, rewardProxy);
   UserRepository repository=new UserGeneratorRepositoryImpl();

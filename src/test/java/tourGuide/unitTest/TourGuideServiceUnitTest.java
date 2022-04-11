@@ -85,7 +85,7 @@ public class TourGuideServiceUnitTest {
     VisitedLocation actual=classUnderTest.getUserLocation(user);
 
     //Then
-    assertSame(actual,user.getLastVisitedLocation());
+    assertSame(actual,locationParis);
     verify(mockGps,times(1)).getUserLocation(user.getUserId());
   }
 
@@ -117,6 +117,7 @@ public class TourGuideServiceUnitTest {
   @Test
   public void givenAUserWhenAddUserThenUserAdded() {
     //Given
+    when(repository.getAllUser()).thenReturn(Arrays.asList(user));
     //When
     classUnderTest.addUser(user);
     //Then
