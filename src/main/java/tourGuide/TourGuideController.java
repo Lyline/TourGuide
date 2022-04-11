@@ -14,6 +14,7 @@ import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
 import tourGuide.service.user.User;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,8 +70,7 @@ public class TourGuideController {
     }
     
     @RequestMapping("/getAllCurrentLocations")
-    public String getAllCurrentLocations() {
-    	// TODO: Get a list of every user's most recent location as JSON
+    public HashMap<UUID, Location> getAllCurrentLocations() {
     	//- Note: does not use gpsUtil to query for their current location, 
     	//        but rather gathers the user's current location from their stored location history.
     	//
@@ -79,8 +79,9 @@ public class TourGuideController {
     	//        "019b04a9-067a-4c76-8817-ee75088c3822": {"longitude":-48.188821,"latitude":74.84371} 
     	//        ...
     	//     }
-    	
-    	return JsonStream.serialize("");
+
+      HashMap<UUID, Location> usersMap= tourGuideService.getAllCurrentLocations();
+    	return usersMap;
     }
     
     @RequestMapping("/getTripDeals")
@@ -92,7 +93,7 @@ public class TourGuideController {
     @RequestMapping("/getTripCustomPricer")
     public List<Provider> getTripCustomPricer(@RequestParam UUID attractionId,
                                               @RequestParam String userName, @RequestParam int adults,
-                                        @RequestParam int children, @RequestParam int nightsStay){
+                                              @RequestParam int children, @RequestParam int nightsStay){
       return tourGuideService.getTripCustomPricer(attractionId,userName,adults,children,nightsStay);
     }
 

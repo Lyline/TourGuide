@@ -15,10 +15,7 @@ import tourGuide.service.user.User;
 import tourGuide.service.user.UserReward;
 import tourGuide.tracker.Tracker;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static tourGuide.repository.UserGeneratorRepositoryImpl.tripPricerApiKey;
@@ -135,7 +132,18 @@ public class TourGuideService {
 		}else return selectedAttractions;
 	}
 
-	public void initTracker(){
+	public HashMap<UUID,Location> getAllCurrentLocations(){
+		List<User> users= repository.getAllUser();
+		HashMap<UUID,Location> usersMap= new HashMap<>();
+
+		for(User user:users){
+			usersMap.put(user.getUserId(), user.getLastVisitedLocation().getLocation());
+		}
+
+		return usersMap;
+	}
+
+		public void initTracker(){
 		tracker=new Tracker(this);
 		addShutDownHook();
 	}
