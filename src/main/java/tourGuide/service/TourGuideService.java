@@ -16,6 +16,9 @@ import tourGuide.service.user.UserReward;
 import tourGuide.tracker.Tracker;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static tourGuide.repository.UserGeneratorRepositoryImpl.tripPricerApiKey;
@@ -143,7 +146,25 @@ public class TourGuideService {
 		return usersMap;
 	}
 
-		public void initTracker(){
+	public void getAllUserRewardCalculate(TourGuideService tourGuideService){
+		List<User> users= tourGuideService.getAllUsers();
+		ExecutorService executorService= Executors.newFixedThreadPool(200);
+
+		users.forEach(user ->
+			executorService.submit(new Thread(()->rewardsService.calculateRewards(user)))
+		);
+
+		executorService.shutdown();
+
+		boolean result= false;
+		try{
+			result=executorService.awaitTermination(20, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void initTracker(){
 		tracker=new Tracker(this);
 		addShutDownHook();
 	}
