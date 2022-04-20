@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.rewardCentralProxy.RewardProxy;
 import tourGuide.proxies.tripPricerProxy.TripPricerProxy;
@@ -29,16 +30,19 @@ public class TourGuideModule {
 	private String rewardURL;
 
 	@Bean
+	@Primary
 	public RewardsService getRewardsService() {
 		return new RewardsService(getGpsProxy(), getRewardProxy());
 	}
 
 	@Bean
+	@Primary
 	public UserRepository getUserRepository() {
 		return new UserGeneratorRepositoryImpl();
 	}
 
 	@Bean
+	@Primary
 	public TripPricerProxy getTripPricerProxy(){
 		logger.info("Initializing tripProxy @ "+ tripURL);
 		return Feign.builder().client(new OkHttpClient())
@@ -48,6 +52,7 @@ public class TourGuideModule {
 	}
 
 	@Bean
+	@Primary
 	public GpsProxy getGpsProxy(){
 		logger.info("Initializing gpsProxy @ "+ gpsURL);
 		return Feign.builder().client(new OkHttpClient())
@@ -57,6 +62,7 @@ public class TourGuideModule {
 	}
 
 	@Bean
+	@Primary
 	public RewardProxy getRewardProxy(){
 		logger.info("Initializing rewardProxy @ "+ rewardURL);
 		return Feign.builder().client(new OkHttpClient())
@@ -65,4 +71,32 @@ public class TourGuideModule {
 				.target(RewardProxy.class,rewardURL);
 	}
 
+	@Bean
+	public RewardsService getRewardsServiceTest() {
+		return new RewardsService(getGpsProxyTest(), getRewardProxyTest());
+	}
+
+	@Bean
+	public TripPricerProxy getTripPricerProxyTest(){
+		return Feign.builder().client(new OkHttpClient())
+				.encoder(new GsonEncoder())
+				.decoder(new GsonDecoder())
+				.target(TripPricerProxy.class,"http://localhost:9003");
+	}
+
+	@Bean
+	public GpsProxy getGpsProxyTest(){
+		return Feign.builder().client(new OkHttpClient())
+				.encoder(new GsonEncoder())
+				.decoder(new GsonDecoder())
+				.target(GpsProxy.class, "http://localhost:9001");
+	}
+
+	@Bean
+	public RewardProxy getRewardProxyTest(){
+		return Feign.builder().client(new OkHttpClient())
+				.encoder(new GsonEncoder())
+				.decoder(new GsonDecoder())
+				.target(RewardProxy.class,"http://localhost:9002");
+	}
 }

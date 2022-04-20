@@ -42,9 +42,10 @@ public class TestPerformance {
 
 	private TourGuideModule tourGuideModule= new TourGuideModule();
 	private UserGeneratorRepositoryImpl repository= new UserGeneratorRepositoryImpl();
-	RewardsService rewardsService = new RewardsService(tourGuideModule.getGpsProxy(), tourGuideModule.getRewardProxy());
-	TourGuideService tourGuideService = new TourGuideService(tourGuideModule.getGpsProxy(),
-			rewardsService,tourGuideModule.getTripPricerProxy(), repository);
+	private RewardsService rewardsService = new RewardsService(tourGuideModule.getGpsProxyTest(),
+			tourGuideModule.getRewardProxyTest());
+	private TourGuideService tourGuideService = new TourGuideService(tourGuideModule.getGpsProxyTest(),
+																					rewardsService,tourGuideModule.getTripPricerProxyTest(), repository);
 
 
 	@BeforeAll
@@ -56,7 +57,7 @@ public class TestPerformance {
 	public void highVolumeTrackLocation() {
 		//Given
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
-		tourGuideService.initUsers(10000);
+		tourGuideService.initUsers(100000);
 
 		//When
 		StopWatch stopWatch = new StopWatch();
@@ -73,13 +74,13 @@ public class TestPerformance {
 
 	@Test
 	public void highVolumeGetRewards() {
-		GpsProxy gpsProxy= tourGuideModule.getGpsProxy();
 		StopWatch stopWatch = new StopWatch();
-
+		//Given
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
-		repository.initializeInternalUsers(100000);
+		tourGuideService.initUsers(100000);
 
-		Attraction attraction= gpsProxy.getAttractions().get(0);
+		//When
+		Attraction attraction= tourGuideModule.getGpsProxyTest().getAttractions().get(0);
 		List<User> allUsers= tourGuideService.getAllUsers();
 
 		allUsers.forEach(u -> {
@@ -95,6 +96,7 @@ public class TestPerformance {
 		}
 		stopWatch.stop();
 
+		//Then
 		System.out.println("highVolumeGetRewards: Time Elapsed: " + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + " seconds."); 
 		assertTrue(TimeUnit.MINUTES.toSeconds(20) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
 	}
