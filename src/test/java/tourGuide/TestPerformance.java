@@ -79,7 +79,6 @@ public class TestPerformance {
 		// Users should be incremented up to 100,000, and test finishes within 20 minutes
 		tourGuideService.initUsers(100000);
 
-		//When
 		Attraction attraction= tourGuideModule.getGpsProxyTest().getAttractions().get(0);
 		List<User> allUsers= tourGuideService.getAllUsers();
 
@@ -87,6 +86,7 @@ public class TestPerformance {
 			u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date()));
 		});
 
+		//When
 		stopWatch.start();
 
 		tourGuideService.getAllUserRewardCalculate(tourGuideService);
@@ -94,6 +94,7 @@ public class TestPerformance {
 		for(User user : allUsers) {
 			assertTrue(user.getUserRewards().size() > 0);
 		}
+
 		stopWatch.stop();
 
 		//Then

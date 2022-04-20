@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserGeneratorRepositoryTest {
   private UserGeneratorRepositoryImpl classUnderTest= new UserGeneratorRepositoryImpl();
 
-
   @Test
   public void givenAUserExistWhenGetUserThenUserIsFound() {
     //Given
