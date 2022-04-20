@@ -1,6 +1,8 @@
 package tourGuide.unitTest;
 
 import org.junit.jupiter.api.Test;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.gpsProxy.beans.Attraction;
 import tourGuide.proxies.gpsProxy.beans.Location;
@@ -11,8 +13,6 @@ import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
-import tourGuide.service.user.User;
-import tourGuide.service.user.UserReward;
 
 import java.util.Arrays;
 import java.util.Date;

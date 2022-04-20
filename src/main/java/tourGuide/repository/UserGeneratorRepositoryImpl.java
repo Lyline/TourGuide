@@ -2,9 +2,9 @@ package tourGuide.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tourGuide.model.User;
 import tourGuide.proxies.gpsProxy.beans.Location;
 import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
-import tourGuide.service.user.User;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

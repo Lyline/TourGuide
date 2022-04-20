@@ -1,6 +1,8 @@
 package tourGuide;
 
 import org.junit.jupiter.api.Test;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.gpsProxy.beans.Attraction;
 import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
@@ -10,8 +12,6 @@ import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
-import tourGuide.service.user.User;
-import tourGuide.service.user.UserReward;
 
 import java.util.Date;
 import java.util.List;
@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestRewardsService {
   private TourGuideModule tourGuideModule= new TourGuideModule();
-	private GpsProxy gpsProxy= tourGuideModule.getGpsProxy();
-	private RewardProxy rewardProxy= tourGuideModule.getRewardProxy();
-	private TripPricerProxy tripPricerProxy= tourGuideModule.getTripPricerProxy();
+	private GpsProxy gpsProxy= tourGuideModule.getGpsProxyTest();
+	private RewardProxy rewardProxy= tourGuideModule.getRewardProxyTest();
+	private TripPricerProxy tripPricerProxy= tourGuideModule.getTripPricerProxyTest();
 
   RewardsService rewardsService = new RewardsService(gpsProxy, rewardProxy);
   UserRepository repository=new UserGeneratorRepositoryImpl();
@@ -50,8 +50,7 @@ public class TestRewardsService {
 		Attraction attraction = gpsProxy.getAttractions().get(0);
 		assertTrue(rewardsService.isWithinAttractionProximity(attraction, attraction));
 	}
-	
-	//@Ignore // Needs fixed - can throw ConcurrentModificationException
+
 	@Test
 	public void nearAllAttractions() {
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);

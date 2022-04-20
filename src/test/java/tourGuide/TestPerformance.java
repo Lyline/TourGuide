@@ -3,13 +3,12 @@ package tourGuide;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import tourGuide.proxies.gpsProxy.GpsProxy;
+import tourGuide.model.User;
 import tourGuide.proxies.gpsProxy.beans.Attraction;
 import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
-import tourGuide.service.user.User;
 import tourGuide.tracker.TrackUser;
 
 import java.util.Date;
@@ -55,10 +54,7 @@ public class TestPerformance {
 
 	@Test
 	public void highVolumeTrackLocation() {
-
 		//Given
-
-
 		// Users should be incremented up to 100,000, and test finishes within 15 minutes
 		tourGuideService.initUsers(10000);
 

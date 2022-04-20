@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tourGuide.model.User;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.gpsProxy.beans.Location;
 import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
@@ -12,7 +13,6 @@ import tourGuide.proxies.rewardCentralProxy.RewardProxy;
 import tourGuide.proxies.tripPricerProxy.beans.Provider;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
-import tourGuide.service.user.User;
 
 import java.util.HashMap;
 import java.util.List;

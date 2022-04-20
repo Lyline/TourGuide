@@ -1,4 +1,4 @@
-package tourGuide.service.user;
+package tourGuide.model;
 
 import tourGuide.proxies.gpsProxy.beans.Attraction;
 import tourGuide.proxies.gpsProxy.beans.VisitedLocation;

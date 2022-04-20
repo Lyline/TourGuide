@@ -1,4 +1,4 @@
-package tourGuide.service.user;
+package tourGuide.model;
 
 import org.javamoney.moneta.Money;
 

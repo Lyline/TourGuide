@@ -3,6 +3,8 @@ package tourGuide.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.gpsProxy.beans.Attraction;
 import tourGuide.proxies.gpsProxy.beans.Location;
@@ -11,8 +13,6 @@ import tourGuide.proxies.tripPricerProxy.TripPricerProxy;
 import tourGuide.proxies.tripPricerProxy.beans.Provider;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.dto.AttractionDto;
-import tourGuide.service.user.User;
-import tourGuide.service.user.UserReward;
 import tourGuide.tracker.Tracker;
 
 import java.util.*;
@@ -118,12 +118,14 @@ public class TourGuideService {
 		List<Attraction> attractions= gpsProxy.getAttractions();
 
 		for(Attraction attract: attractions){
-			double distance= rewardsService.getDistance(
-					new Location(attract.latitude,attract.longitude),
-					new Location(user.getLastVisitedLocation().location.latitude,
-							user.getLastVisitedLocation().location.longitude));
+			Location attractionLocation= new Location(attract.latitude,attract.longitude);
+			Location userLocation= new Location(user.getLastVisitedLocation().getLocation().latitude,
+					user.getLastVisitedLocation().getLocation().longitude);
 
-			sortedAttractions.add(new AttractionDto(attract,user.getLastVisitedLocation(),distance));
+			double distance= rewardsService.getDistance(attractionLocation,userLocation);
+			int rewardPoint= rewardsService.getRewardPoints(attract,user);
+
+			sortedAttractions.add(new AttractionDto(attract.attractionName,attractionLocation,userLocation,distance, rewardPoint));
 		}
 
 			List<AttractionDto> selectedAttractions=sortedAttractions.stream()

@@ -1,13 +1,13 @@
 package tourGuide.service;
 
 import org.springframework.stereotype.Service;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tourGuide.proxies.gpsProxy.GpsProxy;
 import tourGuide.proxies.gpsProxy.beans.Attraction;
 import tourGuide.proxies.gpsProxy.beans.Location;
 import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
 import tourGuide.proxies.rewardCentralProxy.RewardProxy;
-import tourGuide.service.user.User;
-import tourGuide.service.user.UserReward;
 
 import java.util.List;
 
