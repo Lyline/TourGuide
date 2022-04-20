@@ -118,8 +118,10 @@ public class TourGuideServiceUnitTest {
   public void givenAUserWhenAddUserThenUserAdded() {
     //Given
     when(repository.getAllUser()).thenReturn(Arrays.asList(user));
+
     //When
     classUnderTest.addUser(user);
+
     //Then
     assertThat(classUnderTest.getAllUsers().size()).isEqualTo(1);
   }
@@ -219,7 +221,6 @@ public class TourGuideServiceUnitTest {
 
     when(mockGps.getAttractions()).thenReturn(Arrays.asList(attraction,attraction1,attraction2,attraction3,
         attraction4,attraction5,attraction6));
-
 
     //When
     List<AttractionDto>actual= classUnderTest.getNearByAttractions(user);

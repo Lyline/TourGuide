@@ -11,6 +11,4 @@ public interface UserRepository {
   List<User> getAllUser();
   User saveUser(User user);
   void initializeInternalUsers(int nbUser);
-
-
 }

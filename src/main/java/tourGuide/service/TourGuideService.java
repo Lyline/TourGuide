@@ -100,14 +100,13 @@ public class TourGuideService {
 		return providers;
 	}
 
-	public List<Provider> getTripCustomPricer(UUID attractionId,String userName, int adultsNumber, int childrenNumber,
-																						int nightStay){
+	public List<Provider> getTripCustomDeals(UUID attractionId, String userName, int adultsNumber, int childrenNumber,
+																					 int nightStay){
 		User user=getUser(userName);
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 
 		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, attractionId, adultsNumber,
 				childrenNumber, nightStay, cumulativeRewardPoints);
-
 		user.setTripDeals(providers);
 
 		return providers;
@@ -128,7 +127,7 @@ public class TourGuideService {
 			sortedAttractions.add(new AttractionDto(attract.attractionName,attractionLocation,userLocation,distance, rewardPoint));
 		}
 
-			List<AttractionDto> selectedAttractions=sortedAttractions.stream()
+		List<AttractionDto> selectedAttractions=sortedAttractions.stream()
 					.sorted(Comparator.comparingDouble(AttractionDto::getDistance))
 					.collect(Collectors.toList());
 
@@ -181,10 +180,6 @@ public class TourGuideService {
 	}
 
 	private void addShutDownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() { 
-		      public void run() {
-		        tracker.stopTracking();
-		      } 
-		    }); 
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> tracker.stopTracking()));
 	}
 }

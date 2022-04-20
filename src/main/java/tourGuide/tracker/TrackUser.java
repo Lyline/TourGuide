@@ -21,7 +21,7 @@ public class TrackUser {
     logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
     timerWatch.start();
 
-   // Distribuer le boulot a une thread pool
+    // Distribuer le boulot à une thread pool
     ExecutorService executorService= Executors.newFixedThreadPool(200);
 
     users.forEach(u -> {
@@ -29,7 +29,7 @@ public class TrackUser {
       executorService.submit(new Thread(() -> tourGuideService.trackUserLocation(u)));
     });
 
-    //Attendre que le boulot soit fini
+    //Attendre que la tâche soit fini
     executorService.shutdown();
 
     boolean result=false;
