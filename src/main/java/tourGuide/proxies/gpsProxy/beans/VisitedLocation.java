@@ -1,4 +1,4 @@
-package tourGuide.proxy.gpsProxy.location;
+package tourGuide.proxies.gpsProxy.beans;
 
 import java.util.Date;
 import java.util.UUID;

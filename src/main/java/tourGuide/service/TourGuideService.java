@@ -3,21 +3,22 @@ package tourGuide.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import tourGuide.proxy.gpsProxy.GpsProxy;
-import tourGuide.proxy.gpsProxy.location.Attraction;
-import tourGuide.proxy.gpsProxy.location.Location;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
-import tourGuide.proxy.tripPricerProxy.Provider;
-import tourGuide.proxy.tripPricerProxy.TripPricer;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
+import tourGuide.proxies.gpsProxy.GpsProxy;
+import tourGuide.proxies.gpsProxy.beans.Attraction;
+import tourGuide.proxies.gpsProxy.beans.Location;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
+import tourGuide.proxies.tripPricerProxy.TripPricerProxy;
+import tourGuide.proxies.tripPricerProxy.beans.Provider;
 import tourGuide.repository.UserRepository;
 import tourGuide.service.dto.AttractionDto;
 import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static tourGuide.repository.UserGeneratorRepositoryImpl.tripPricerApiKey;
@@ -27,7 +28,7 @@ public class TourGuideService {
 	private UserRepository repository;
 	private final GpsProxy gpsProxy;
 	private final RewardsService rewardsService;
-	private final TripPricer tripPricerProxy;
+	private final TripPricerProxy tripPricerProxy;
 
 	public Tracker tracker;
 
@@ -35,7 +36,8 @@ public class TourGuideService {
 
 	boolean testMode = true;
 	
-	public TourGuideService(GpsProxy gpsProxy, RewardsService rewardsService, TripPricer tripPricerProxy, UserRepository repository) {
+	public TourGuideService(GpsProxy gpsProxy, RewardsService rewardsService, TripPricerProxy tripPricerProxy,
+													UserRepository repository) {
 		this.gpsProxy = gpsProxy;
 		this.rewardsService = rewardsService;
 		this.tripPricerProxy = tripPricerProxy;
@@ -65,7 +67,7 @@ public class TourGuideService {
 	}
 
 	public VisitedLocation trackUserLocation(User user) {
-		VisitedLocation visitedLocation = gpsProxy.getUserLocation(user);
+		VisitedLocation visitedLocation = gpsProxy.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
 		return visitedLocation;
@@ -77,7 +79,7 @@ public class TourGuideService {
 		if(user.getVisitedLocations().size()>0){
 			userLocation= user.getLastVisitedLocation();
 		}else {
-			userLocation= gpsProxy.getUserLocation(user);
+			userLocation= gpsProxy.getUserLocation(user.getUserId());
 		}
 		return userLocation;
 	}
@@ -86,10 +88,11 @@ public class TourGuideService {
 		return user.getUserRewards();
 	}
 
-	public List<Provider> getTripDeals(User user) {
+	public List<Provider> getTripDeals(User user,UUID attractionId) {
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 
-		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(),
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, attractionId,
+				user.getUserPreferences().getNumberOfAdults(),
 				user.getUserPreferences().getNumberOfChildren(), user.getUserPreferences().getTripDuration(), cumulativeRewardPoints);
 
 		user.setTripDeals(providers);
@@ -97,12 +100,13 @@ public class TourGuideService {
 		return providers;
 	}
 
-	public List<Provider> getTripCustomPricer(User user, int adultsNumber, int childrenNumber, int nightStay){
+	public List<Provider> getTripCustomDeals(UUID attractionId, String userName, int adultsNumber, int childrenNumber,
+																					 int nightStay){
+		User user=getUser(userName);
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 
-		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, user.getUserId(), adultsNumber,
+		List<Provider> providers = tripPricerProxy.getPrice(tripPricerApiKey, attractionId, adultsNumber,
 				childrenNumber, nightStay, cumulativeRewardPoints);
-
 		user.setTripDeals(providers);
 
 		return providers;
@@ -113,21 +117,52 @@ public class TourGuideService {
 		List<Attraction> attractions= gpsProxy.getAttractions();
 
 		for(Attraction attract: attractions){
-			double distance= rewardsService.getDistance(
-					new Location(attract.latitude,attract.longitude),
-					new Location(user.getLastVisitedLocation().location.latitude,
-							user.getLastVisitedLocation().location.longitude));
+			Location attractionLocation= new Location(attract.latitude,attract.longitude);
+			Location userLocation= new Location(user.getLastVisitedLocation().getLocation().latitude,
+					user.getLastVisitedLocation().getLocation().longitude);
 
-			sortedAttractions.add(new AttractionDto(attract,user.getLastVisitedLocation(),distance));
+			double distance= rewardsService.getDistance(attractionLocation,userLocation);
+			int rewardPoint= rewardsService.getRewardPoints(attract,user);
+
+			sortedAttractions.add(new AttractionDto(attract.attractionName,attractionLocation,userLocation,distance, rewardPoint));
 		}
 
-			List<AttractionDto> selectedAttractions=sortedAttractions.stream()
+		List<AttractionDto> selectedAttractions=sortedAttractions.stream()
 					.sorted(Comparator.comparingDouble(AttractionDto::getDistance))
 					.collect(Collectors.toList());
 
 		if (selectedAttractions.size()>=5){
 			return selectedAttractions.subList(0,5);
 		}else return selectedAttractions;
+	}
+
+	public HashMap<UUID,Location> getAllCurrentLocations(){
+		List<User> users= repository.getAllUser();
+		HashMap<UUID,Location> usersMap= new HashMap<>();
+
+		for(User user:users){
+			usersMap.put(user.getUserId(), user.getLastVisitedLocation().getLocation());
+		}
+
+		return usersMap;
+	}
+
+	public void getAllUserRewardCalculate(TourGuideService tourGuideService){
+		List<User> users= tourGuideService.getAllUsers();
+		ExecutorService executorService= Executors.newFixedThreadPool(200);
+
+		users.forEach(user ->
+			executorService.submit(new Thread(()->rewardsService.calculateRewards(user)))
+		);
+
+		executorService.shutdown();
+
+		boolean result= false;
+		try{
+			result=executorService.awaitTermination(20, TimeUnit.MINUTES);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void initTracker(){
@@ -145,10 +180,6 @@ public class TourGuideService {
 	}
 
 	private void addShutDownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread() { 
-		      public void run() {
-		        tracker.stopTracking();
-		      } 
-		    }); 
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> tracker.stopTracking()));
 	}
 }

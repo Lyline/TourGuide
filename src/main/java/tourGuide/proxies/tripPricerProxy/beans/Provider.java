@@ -1,4 +1,4 @@
-package tourGuide.proxy.tripPricerProxy;
+package tourGuide.proxies.tripPricerProxy.beans;
 
 import java.util.UUID;
 

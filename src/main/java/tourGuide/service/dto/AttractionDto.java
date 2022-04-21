@@ -1,41 +1,39 @@
 package tourGuide.service.dto;
 
-import tourGuide.proxy.gpsProxy.location.Attraction;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
+import tourGuide.proxies.gpsProxy.beans.Location;
 
 public class AttractionDto {
-  //supprimer dependance a gpsUtil -> creer champs indépendants
-  private Attraction attraction;
-  private VisitedLocation userLocation;
-  private double distance;
+  private final String attractionName;
+  private final Location attractionLocation;
+  private final Location userLocation;
+  private final double distance;
+  private final int rewardPoint;
 
-  public AttractionDto(Attraction attraction, VisitedLocation userLocation, double distance) {
-    this.attraction = attraction;
+  public AttractionDto(String attractionName, Location attractionLocation, Location userLocation, double distance, int rewardPoint) {
+    this.attractionName = attractionName;
+    this.attractionLocation = attractionLocation;
     this.userLocation = userLocation;
     this.distance = distance;
+    this.rewardPoint = rewardPoint;
   }
 
-  public Attraction getAttraction() {
-    return attraction;
+  public String getAttractionName() {
+    return attractionName;
   }
 
-  public void setAttraction(Attraction attraction) {
-    this.attraction = attraction;
+  public Location getAttractionLocation() {
+    return attractionLocation;
   }
 
-  public VisitedLocation getUserLocation() {
+  public Location getUserLocation() {
     return userLocation;
-  }
-
-  public void setUserLocation(VisitedLocation userLocation) {
-    this.userLocation = userLocation;
   }
 
   public double getDistance() {
     return distance;
   }
 
-  public void setDistance(double distance) {
-    this.distance = distance;
+  public int getRewardPoint() {
+    return rewardPoint;
   }
 }

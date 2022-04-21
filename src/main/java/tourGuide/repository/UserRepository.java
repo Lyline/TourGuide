@@ -1,7 +1,7 @@
 package tourGuide.repository;
 
 import org.springframework.stereotype.Repository;
-import tourGuide.user.User;
+import tourGuide.model.User;
 
 import java.util.List;
 
@@ -11,6 +11,4 @@ public interface UserRepository {
   List<User> getAllUser();
   User saveUser(User user);
   void initializeInternalUsers(int nbUser);
-
-
 }

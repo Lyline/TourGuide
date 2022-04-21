@@ -1,4 +1,4 @@
-package tourGuide.proxy.gpsProxy.location;
+package tourGuide.proxies.gpsProxy.beans;
 
 public class Location {
   public final double longitude;

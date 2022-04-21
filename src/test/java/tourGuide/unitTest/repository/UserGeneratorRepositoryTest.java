@@ -1,18 +1,17 @@
 package tourGuide.unitTest.repository;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import tourGuide.model.User;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
-import tourGuide.user.User;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserGeneratorRepositoryTest {
   private UserGeneratorRepositoryImpl classUnderTest= new UserGeneratorRepositoryImpl();
-
 
   @Test
   public void givenAUserExistWhenGetUserThenUserIsFound() {

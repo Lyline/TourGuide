@@ -1,18 +1,18 @@
 package tourGuide.unitTest;
 
-import org.junit.Test;
-import tourGuide.proxy.gpsProxy.GpsProxy;
-import tourGuide.proxy.gpsProxy.location.Attraction;
-import tourGuide.proxy.gpsProxy.location.Location;
-import tourGuide.proxy.gpsProxy.location.VisitedLocation;
-import tourGuide.proxy.tripPricerProxy.Provider;
-import tourGuide.proxy.tripPricerProxy.TripPricer;
+import org.junit.jupiter.api.Test;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
+import tourGuide.proxies.gpsProxy.GpsProxy;
+import tourGuide.proxies.gpsProxy.beans.Attraction;
+import tourGuide.proxies.gpsProxy.beans.Location;
+import tourGuide.proxies.gpsProxy.beans.VisitedLocation;
+import tourGuide.proxies.tripPricerProxy.TripPricerProxy;
+import tourGuide.proxies.tripPricerProxy.beans.Provider;
 import tourGuide.repository.UserGeneratorRepositoryImpl;
 import tourGuide.service.RewardsService;
 import tourGuide.service.TourGuideService;
 import tourGuide.service.dto.AttractionDto;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -29,7 +29,7 @@ public class TourGuideServiceUnitTest {
 
   private GpsProxy mockGps= mock(GpsProxy.class);
   private RewardsService mockRewards= mock(RewardsService.class);
-  private TripPricer mockPricer= mock(TripPricer.class);
+  private TripPricerProxy mockPricer= mock(TripPricerProxy.class);
 
   private UserGeneratorRepositoryImpl repository= mock(UserGeneratorRepositoryImpl.class);
 
@@ -85,8 +85,8 @@ public class TourGuideServiceUnitTest {
     VisitedLocation actual=classUnderTest.getUserLocation(user);
 
     //Then
-    assertSame(actual,user.getLastVisitedLocation());
-    verify(mockGps,times(1)).getUserLocation(user);
+    assertSame(actual,locationParis);
+    verify(mockGps,times(1)).getUserLocation(user.getUserId());
   }
 
   @Test
@@ -117,8 +117,11 @@ public class TourGuideServiceUnitTest {
   @Test
   public void givenAUserWhenAddUserThenUserAdded() {
     //Given
+    when(repository.getAllUser()).thenReturn(Arrays.asList(user));
+
     //When
     classUnderTest.addUser(user);
+
     //Then
     assertThat(classUnderTest.getAllUsers().size()).isEqualTo(1);
   }
@@ -133,7 +136,7 @@ public class TourGuideServiceUnitTest {
 
     //Then
     assertSame(actual,user.getLastVisitedLocation());
-    verify(mockGps,times(1)).getUserLocation(user);
+    verify(mockGps,times(1)).getUserLocation(user.getUserId());
   }
 
   @Test
@@ -205,7 +208,7 @@ public class TourGuideServiceUnitTest {
         .thenReturn(Arrays.asList(provider,provider1));
 
     //When
-    List<Provider>actual= classUnderTest.getTripDeals(user);
+    List<Provider>actual= classUnderTest.getTripDeals(user, attraction.attractionId);
 
     //Then
     assertThat(actual.size()).isEqualTo(2);
@@ -218,7 +221,6 @@ public class TourGuideServiceUnitTest {
 
     when(mockGps.getAttractions()).thenReturn(Arrays.asList(attraction,attraction1,attraction2,attraction3,
         attraction4,attraction5,attraction6));
-
 
     //When
     List<AttractionDto>actual= classUnderTest.getNearByAttractions(user);

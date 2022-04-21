@@ -3,8 +3,8 @@ package tourGuide.tracker;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tourGuide.model.User;
 import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +21,7 @@ public class TrackUser {
     logger.debug("Begin Tracker. Tracking " + users.size() + " users.");
     timerWatch.start();
 
-   // Distribuer le boulot a une thread pool
+    // Distribuer le boulot à une thread pool
     ExecutorService executorService= Executors.newFixedThreadPool(200);
 
     users.forEach(u -> {
@@ -29,7 +29,7 @@ public class TrackUser {
       executorService.submit(new Thread(() -> tourGuideService.trackUserLocation(u)));
     });
 
-    //Attendre que le boulot soit fini
+    //Attendre que la tâche soit fini
     executorService.shutdown();
 
     boolean result=false;
