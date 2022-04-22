@@ -1,0 +1,49 @@
+version: '3'
+services:
+  gps:
+    container_name: gps_microservice
+    build:
+      context: "../gpsMicroservice"
+      dockerfile: ../gpsMicroservice/Dockerfile
+    image: gps_microservice:latest
+    ports:
+      - "9001:9001"
+    networks:
+      - networkEnvironment
+  
+  reward:
+    container_name: reward_microservice
+    build:
+      context: "../rewardCentralMicroservice"
+      dockerfile: ../RewardCentralMicroservice/Dockerfile
+    image: reward_microservice:latest
+    ports:
+      - 9002:9002
+    networks:
+      - networkEnvironment
+
+  trip:
+    container_name: trip_pricer_microservice
+    build:
+      context: "../tripPricerMicroservice"
+      dockerfile: ../tripPricerMicroservice/Dockerfile
+    image: trip_microservice:latest
+    ports:
+      - "9003:9003"
+    networks:
+      - networkEnvironment
+
+  tourGuide:
+    container_name: tour_guide_app
+    build:
+      context: "../tourGuide"
+      dockerfile: Dockerfile
+    image: test_tour_prod:latest
+    ports:
+      - "8080:8080"
+    networks:
+      - networkEnvironment
+
+networks:
+  networkEnvironment:
+    driver: bridge
